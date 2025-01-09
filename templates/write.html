@@ -1,420 +1,637 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Doctor's Bonding Hub</title>
-    <meta name="description" content="A platform for doctors to share experiences and bond">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healios-AI Social Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Define the base theme colors */
-        :root {
-            --primary-color: #9334db;
-            --secondary-color: #2ecc71;
-            --background-color: #f4f7f9;
-            --text-color: #2d2727;
-            --border-color: #e0e0e0;
-            --header-bg-color: #edeef2;
-        }
-
-        /* Base styles for the body */
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            background-attachment: fixed;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        /* Container settings */
-        .container {
+        :root {
+            --primary-blue: #0284c7;
+            --light-blue: #e0f2fe;
+            --hover-blue: #0369a1;
+            --border-color: #e5e7eb;
+            --background-color: #f3f4f6;
+        }
+
+        body {
+            background-color: var(--background-color);
+        }
+
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-image: linear-gradient(to right, rgb(213, 213, 220), #63aef0);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Header settings */
-        header {
-            background-image: linear-gradient(to bottom, rgb(118, 118, 222),rgb(225, 154, 229));
-            box-shadow: 0 2px 4px rgba(240, 12, 12, 0.1);
-            padding: 10px 0;
-            margin-bottom: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        .main-heading {
-            font-size: 2em;
-            margin: 0;
-            text-align: center;
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-            color: white;
-            font-weight: bolder;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 5px #2b2828, 0 0 10px #fff;
-            }
-            to {
-                text-shadow: 0 0 10px #675f5f, 0 0 20px #de8fb6;
-            }
-        }
-        .nav-links {
-            text-align: center;
-            margin-top: 10px;
-        }
-        .link, .form-submit-btn {
-            background-image: linear-gradient(to right, #4776E6 0%, #8E54E9 51%, #4776E6 100%);
-            transition: 0.5s;
-            background-size: 200% auto;
-            color: #fff;
-            box-shadow: 0 0 20px #eee;
-            border-radius: 10px;
+        .logo {
+            background-image: url(/Healios.ai/static/images/healiosLogo.png);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100px;
+            height: 50px;
             display: inline-block;
-            padding: 8px 15px;
-            text-decoration: none;
-            margin: 0 8px;
-            font-size: 14px;
+            color: #2288e1;
+            margin-left: 1px;
         }
-        .link:hover, .form-submit-btn:hover {
-            background-position: right center;
-            color: #fff;
-            text-decoration: none;
-            transform: translateY(-3px);
-        }
-        .content-wrapper {
+
+        .nav-icons {
             display: flex;
-            gap: 30px;
-            flex-wrap: wrap; 
-            overflow-x: hidden;
+            gap: 1.5rem;
         }
+
+        .nav-icons i {
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-icons i:hover {
+            transform: scale(1.1);
+        }
+
+        
+        .container {
+            max-width: 1200px;
+            margin: 5rem auto 0;
+            display: flex;
+            gap: 2rem;
+            padding: 0 2rem;
+            justify-content: space-between;
+        }
+
+       
+        .sidebar {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            padding-bottom: 1rem;
+            margin-top: 3rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: fit-content;
+            min-width: min-content;
+        }
+
+        .sidebar:hover {
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-sidebar {
+            position: relative;
+            top: 2rem;
+            max-height: fit-content;
+            /* /* height: calc(100vh - 5rem); */
+            overflow-y: auto;
+        }
+
+        .right-sidebar {
+            position: relative;
+            top: 2rem;
+            max-height: fit-content;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            width: max-content;
+        }
+
+        .menu-item:hover {
+            background: #8bb3e5;
+            transform: translateX(0.5rem);
+        }
+
+        .create-post-btn {
+            background: var(--primary-blue);
+            color: white;
+            width: max-content;
+            min-width: 100%;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .create-post-btn:hover {
+            background: var(--hover-blue);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 600px;
+            position: fixed;
+        }
+
+        .modal-close {
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        
+        .main-feed {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            flex-grow: 1;
+        }
+
         .form-section, .posts-section {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            min-width: 280px; 
+            margin-bottom: 2rem;
+        }
+
+        .sub-heading, .sub-heading2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 1.5rem;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 0.5rem;
             font-weight: bold;
-            color: var(--primary-color);
-        }
-        .form-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box; 
-        }
-        .form-submit-btn {
-            border: none;
-            padding: 12px 24px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-        }
-        .sub-heading {
-            background-image: linear-gradient(to left, #553c9a, #f03c78);
-            color: transparent;
-            background-clip: text;
-            -webkit-background-clip: text;
-            font-size: 1.8em;
-            font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #553c9a;
-            padding-bottom: 10px;
         }
 
-        .posts-section {
-            padding: 16px;
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
         }
-        .sub-heading2{
-            background-image: linear-gradient(to bottom, #977dde, #f50e5b);
-            color: transparent;
-            background-clip: text;
-            -webkit-background-clip: text;
-            font-size: 1.8em;
-            font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            display: flex;
-            justify-items: center;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #553c9a;
-            padding-bottom: 15px;
+
+        .form-submit-btn {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
         }
+
         .post-list {
             list-style-type: none;
             padding: 0;
-            margin: 0;
         }
+
         .post-item {
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 16px;
-            margin-bottom: 16px;
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         }
-        .post-item:last-child {
-            border-bottom: none;
-        }
+
         .post-meta {
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
-        }
-        .avatar {
-            background-image: url(static/images/shared_image.png);
-            width: 60px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            background-size: cover;
-        }
-        .post-info {
-            flex-grow: 1;
-        }
-        .author {
-            font-weight: bold;
-            margin: 0;
-        }
-        .timestamp {
-            color: #3e78eb;
-            font-size: 0.9em;
-            margin: 0;
-        }
-        .post-title {
-            font-size: 1.2em;
-            margin: 8px 0;
-            background-image: linear-gradient(to bottom, rgb(5, 51, 232) , rgb(124, 105, 235));
-            color: transparent;
-            background-clip: text;
-            -webkit-background-clip: text;
-        }
-        .post-tags {
-            color: #65676b;
-            font-size: 0.9em;
-            margin-bottom: 8px;
-        }
-        .post-content {
-            margin-bottom: 12px;
-            font-size: 1.2em;
-            font-weight: 20px;
-        }
-        .post-actions {
-            display: flex;
             justify-content: space-between;
-            border-top: 1px solid #e0e0e0;
-            padding-top: 12px;
+            margin-bottom: 0.75rem;
         }
-        .action-button {
-            background: none;
-            border: none;
-            color: #65676b;
-            font-size: 1em;
-            padding: 8px;
-            cursor: pointer;
-            flex-grow: 1;
+
+        .avatar {
+
+            border-radius: 50%;
+            background-image: url(/Healios.ai/static/images/shared\ image.png);
+            background-size: cover;
+            background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-right: 0.75rem;
         }
-        .action-button:hover {
-            background-color: #f0f2f5;
+
+        .post-info {
+            flex-grow: 1;
         }
-        .emoji {
-            margin-right: 8px;
-            font-size: 1.2em;
+
+        .author {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
         }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
         .more-options {
             position: relative;
         }
+
         .more-button {
             background: none;
             border: none;
-            color: #65676b;
-            font-size: 1.5em;
+            font-size: 1.5rem;
             cursor: pointer;
-            padding: 0 8px;
         }
+
         .options-menu {
             position: absolute;
             right: 0;
-            top: 100%;
-            background-color: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
             display: none;
         }
-        .more-options:focus-within .options-menu {
+
+        .options-menu.active {
             display: block;
         }
+
         .menu-item {
-            display: block;
-            width: 100%;
-            padding: 8px 16px;
-            text-align: left;
-            background: none;
-            border: none;
+            padding: 0.5rem 1rem;
             cursor: pointer;
         }
+
         .menu-item:hover {
-            background-color: #f0f2f5;
+            background-color: var(--light-blue);
         }
-        .like-checkbox {
+
+        .post-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-content {
+            margin-bottom: 0.75rem;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .post-tag {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.75rem;
+        }
+
+        .action-button {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .action-button:hover {
+            color: var(--primary-blue);
+        }
+
+        .emoji {
+            font-size: 1.2rem;
+        }
+
+        .like-checkbox, .comment-radio {
             display: none;
         }
-        .like-checkbox:checked + .action-button {
-            color: #1877f2;
-        }
-        .like-checkbox:checked + .action-button .emoji {
-            animation: like-animation 0.5s;
-        }
-        @keyframes like-animation {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        .comment-radio {
-            display: none;
-        }
+
         .comment-box {
+            margin-top: 1rem;
             display: none;
-            margin-top: 12px;
         }
+
         .comment-radio:checked ~ .comment-box {
             display: block;
         }
+
         .comment-input {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #e0e0e0;
-            border-radius: 20px;
-            resize: none;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            resize: vertical;
         }
-        @media (max-width: 768px) {
-            header {
-                padding: 15px 0;
-            }
 
-            .main-heading {
-                font-size: 1.8em;
-            }
+        
+        .stats-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            width: max-content;
+            min-width: 200px;
+        }
 
-            .nav-links {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
 
-            .link {
-                margin: 5px 10px;
-            }
+        .stat-item {
+            background: var(--light-blue);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: nowrap;
+        }
 
-            .content-wrapper {
+        .content-wrapper {
+            flex-grow: 1;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            min-width: 0;
+            max-width: calc(100% - 500px);
+        }
+
+        
+        .footer {
+            background-size: cover;
+            background-position: center;
+            background-image: linear-gradient(to right, rgb(138, 138, 143), #9fd3f5);
+            padding: 2rem 0;
+            font-family: Arial, sans-serif;
+            position: relative;
+            margin-top: 2rem;
+        }
+
+        .footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: linear-gradient(to right, rgb(114, 114, 117), #5fb8f4);
+            z-index: 1;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-details a,
+        .contact-details p {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #f2f2f2;
+            font-size: 1.1rem;
+        }
+
+        .contact-details i {
+            margin-right: 10px;
+            color: #303031;
+            font-size: 1.2rem;
+        }
+
+        .footer h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #00050a;
+            font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+            color: white;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .footer-link {
+            display: block;
+            margin: 10px 0;
+            color: #e6e8e8;
+            text-decoration: solid;
+            font-size: 1.1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #ffffff;
+            transform: translateX(10px);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            font-size: 1.5rem;
+            color: #545656;
+            text-decoration: none;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #ffffff;
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 0.5rem;
+            border-top: 2px solid rgb(255, 255, 255);
+            position: relative;
+            background-color: #3b3c3e;
+            z-index: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
                 flex-direction: column;
-                gap: 20px;
             }
-
-            .form-section, .posts-section {
+            .content-wrapper {
+                max-width: 100%;
+            }
+            .right-sidebar {
+                display: none;
+            }
+            .sidebar {
                 width: 100%;
-                padding: 15px; 
-            }
-
-            .form-input {
-                padding: 10px; 
-                font-size: 14px; 
-            }
-
-            .form-submit-btn {
-                padding: 10px 20px; 
-                font-size: 14px;
-            }
-
-            .post-item {
-                padding: 15px;
+                max-width: none;
             }
         }
 
-        @keyframes slideInFromLeft {
-            0% {
-                transform: translateX(-100%);
-                opacity: 0;
+        @media (max-width: 768px) {
+            .left-sidebar {
+                display: none;
             }
-            100% {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideInFromRight {
-            0% {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateX(0);
-                opacity: 1;
+            .container {
+                margin-top: 4rem;
+                padding: 0 1rem;
             }
         }
-
-        .form-section {
-            animation: slideInFromLeft 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
-        }
-
-        .posts-section {
-            animation: slideInFromRight 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
-        }
-   
     </style>
 </head>
 <body>
-    <!-- Header section -->
-    <header>
-        <div class="container">
-            <h1 class="main-heading">🏥 Your Story: Page for your reflection</h1>
-            <nav class="nav-links">
-                <a href="{{url_for('bonding')}}" class="link">See what others say</a>
-                <a href="{{url_for('dashboard')}}" class="link">Dashboard</a>
-            </nav>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo"></div>
+            <div class="nav-icons">
+                <i class="fas fa-search"></i>
+                <i class="fas fa-bell"></i>
+                <i class="fas fa-user"></i>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Main content section -->
+    <!-- Main Container -->
     <main class="container">
-        <div class="content-wrapper">
-            <section class="form-section">
-                <h2 class="sub-heading">Share Your Thoughts</h2>
-                <form method="POST" action="">
-                    {{ form.hidden_tag() }}
-                    <div class="form-group">
-                        <label class="form-label" for="title">Title</label>
-                        {{ form.title(id="title", class_="form-input", placeholder="Enter post title") }}
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="content">Content</label>
-                        {{ form.content(id="content", rows=4, class_="form-input", placeholder="Share your thoughts, experiences, or medical insights...") }}
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="tags">Tags</label>
-                        {{ form.tags(id="tags", class_="form-input", placeholder="Enter tags (comma-separated)") }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.submit(class_="form-submit-btn") }}
-                    </div>
-                </form>
-            </section>
+        <!-- Left Sidebar -->
+        <div class="sidebar left-sidebar">
+            <button class="create-post-btn" id="create-post-btn">
+                <i class="fas fa-plus-circle"></i>
+                <span>Create Post</span>
+            </button>
+            <div class="menu-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-stethoscope"></i>
+                <span>Medical Feed</span>
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-calendar"></i>
+                <span>Appointments</span>
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-bell"></i>
+                <span>Notifications</span>
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-envelope"></i>
+                <span>Messages</span>
+            </div>
+        </div>
 
+        <!-- Post Form Modal -->
+        <div class="modal" id="post-modal">
+            <div class="modal-content">
+                <button class="modal-close" id="modal-close">&times;</button>
+                <section class="form-section">
+                    <h2 class="sub-heading">Share Your Thoughts</h2>
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            <label class="form-label" for="title">Title</label>
+                            {{ form.title(id="title", class_="form-input", placeholder="Enter post title") }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="content">Content</label>
+                            {{ form.content(id="content", rows=4, class_="form-input", placeholder="Share your thoughts, experiences, or medical insights...") }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="tags">Tags</label>
+                            {{ form.tags(id="tags", class_="form-input", placeholder="Enter tags (comma-separated)") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.submit(class_="form-submit-btn") }}
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+
+        <!-- Main Feed -->
+        <div class="content-wrapper">
             <section class="posts-section">
                 <h2 class="sub-heading2">Your Previous Posts</h2>
                 <ul class="post-list">
@@ -455,6 +672,166 @@
                 </ul>
             </section>
         </div>
+
+       
+        <div class="sidebar right-sidebar">
+            <!-- Stats Dashboard -->
+            <div class="stats-card">
+                <h3>Healthcare Metrics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div>Active Patients</div>
+                        <div>1,234</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>Consultations</div>
+                        <div>89</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-card">
+                <h3>Trending in Healthcare</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div>#AIinHealthcare</div>
+                        <div>2,543 posts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>#DigitalHealth</div>
+                        <div>1,892 posts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
+
+    <footer class="footer">
+        <div class="footer-container" id="contact">
+            <div class="footer-info">
+                <h3>Contact Us</h3>
+                <div class="underline2"></div>
+                <div class="contact-details">
+                    <a href="/cdn-cgi/l/email-protection#3f4d565841585b5d575e4d585e417f585259135c5052">
+                        <i class="fas fa-envelope"></i> <span class="__cf_email__" data-cfemail="5b293234253c3f393338293c3a251b3c363a323775383436">[email&#160;protected]</span>
+                    </a>
+                    <a href="tel:+916203522100">
+                        <i class="fas fa-phone-alt"></i> +916203522100
+                    </a>
+                    <p><i class="fas fa-map-marker-alt"></i>Pune</p>
+                </div>
+            </div>
+            <div class="footer-left">
+                <h3>Stay Connected</h3>
+                <div class="underline2"></div>
+                <p>
+                    <a href="{{ url_for('feedback') }}" class="footer-link">Share Feedback</a>
+                </p>
+                <p>
+                    <a href="{{ url_for('appointment') }}" class="footer-link">Book Appointment</a>
+                </p>
+                <p>
+                    <a href="{{ url_for('schedule') }}" class="footer-link">View Schedule</a>
+                </p>
+            </div>
+            <div class="footer-right">
+                <h3>Follow Us</h3>
+                <div class="underline2"></div>
+                <div class="social-icons">
+                    <a href="https://www.linkedin.com/in/your-profile" target="_blank" class="social-link">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://twitter.com/your-profile" target="_blank" class="social-link">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://facebook.com/your-profile" target="_blank" class="social-link">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="footer-bottom">
+        <p style="color: rgb(252, 252, 252)">
+            &copy; 2024 Healios AI. All rights reserved.
+        </p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('post-modal');
+            const createPostBtn = document.getElementById('create-post-btn');
+            const modalClose = document.getElementById('modal-close');
+            const createPostForm = document.getElementById('create-post-form');
+            const postList = document.querySelector('.post-list');
+
+            // Modal controls
+            createPostBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            modalClose.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // Form submission
+            createPostForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('title').value;
+                const content = document.getElementById('content').value;
+                const tags = document.getElementById('tags').value;
+                addNewPost(title, content, tags);
+                createPostForm.reset();
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            function addNewPost(title, content, tags) {
+                const postItem = document.createElement('li');
+                postItem.className = 'post-item';
+                postItem.innerHTML = `
+                    <div class="post-meta">
+                        <div class="avatar"></div>
+                        <div class="post-info">
+                            <p class="author">Dr. John Doe</p>
+                            <p class="timestamp">Just now</p>
+                        </div>
+                        <div class="more-options">
+                            <button class="more-button">⋮</button>
+                            <div class="options-menu">
+                                <button class="menu-item">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="post-title">${title}</h3>
+                    <p class="post-content">${content}</p>
+                    <div class="post-tags">
+                        ${tags.split(',').map(tag => `<span class="post-tag">${tag.trim()}</span>`).join('')}
+                    </div>
+                    <div class="post-actions">
+                        <button class="action-button">
+                            <i class="far fa-heart"></i> Like
+                        </button>
+                        <button class="action-button">
+                            <i class="far fa-comment"></i> Comment
+                        </button>
+                        <button class="action-button">
+                            <i class="far fa-share-square"></i> Share
+                        </button>
+                    </div>
+                `;
+                postList.insertBefore(postItem, postList.firstChild);
+            }
+        });
+    </script>
 </body>
 </html>

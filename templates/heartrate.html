@@ -2,17 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Heartbeat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heartbeat Demo</title>
+  <style>
+    /* Global Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #141e30, #243b55);
+      color: #f2f2f2;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 10px auto;
+      max-width: 600px;
+      line-height: 1.6;
+      opacity: 0.8;
+    }
+
+    /* Container for Video and Canvas */
+    div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px auto;
+      flex-direction: column;
+    }
+
+    video, canvas {
+      border: 3px solid #00bcd4;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      margin-top: 10px;
+    }
+
+    /* Animation for Interactive Elements */
+    canvas {
+      animation: pulse 3s infinite;
+    }
+
+    /* Keyframe Animations */
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); border-color: #00bcd4; }
+      50% { transform: scale(1.05); border-color: #ff4081; }
+    }
+
+    /* Footer Note */
+    footer {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      video, canvas {
+        width: 90%;
+        height: auto;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Heartbeat demo</h1>
-  </br>
+  <h1>Heartbeat Demo</h1>
   <p>Wait for a few minutes before data is displayed.</p>
-  <p>For best results, try in a constantly well lit space with minimal device and subject motion.</p>
-  </br>
+  <p>For best results, try in a constantly well-lit space with minimal device and subject motion.</p>
+
   <div>
     <video hidden id="webcam" width="640" height="480"></video>
     <canvas id="canvas" width="640" height="480"></canvas>
   </div>
-  <script type='module' src="{{url_for('static', filename='index.js')}}"></script>
+
+  <footer>
+    <p>&copy; 2024 Healios.ai | All Rights Reserved</p>
+  </footer>
+
+  <script type="module" src="/Healios.ai/static/index.js"></script>
 </body>
+</html>

@@ -2,158 +2,192 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="WebRTC Video Consultation">
-    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
-    <meta itemprop="description" content="Client-side WebRTC Video Consultation">
-    <meta itemprop="image" content="/placeholder.svg?height=192&width=192">
-    <meta itemprop="name" content="WebRTC Video Consultation">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta id="theme-color" name="theme-color" content="#4a90e2">
-
-    <base target="_blank">
-
     <title>Medical Video Consultation</title>
 
-    <link rel="icon" sizes="192x192" href="/placeholder.svg?height=192&width=192">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f5a623;
-            --background-color: #f0f4f8;
-            --text-color: #333;
-            --border-radius: 8px;
-        }
+    :root {
+    --primary-color: #4a90e2;
+    --secondary-color: #f5a623;
+    --background-color: #f9fafb;
+    --text-color: #333;
+    --card-background: #ffffff;
+    --border-radius: 16px;
+    --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    --button-active: rgba(74, 144, 226, 0.2);
+}
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
 
-        #container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+#container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
 
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-        }
+h1 {
+    color: var(--primary-color);
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
 
-        .video-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            height: 60vh;
-        }
+.video-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    height: 60vh;
+    margin-bottom: 20px;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
 
-        .video-wrapper {
-            width: 48%;
-            position: relative;
-            overflow: hidden;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+.video-wrapper {
+    flex: 1;
+    position: relative;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            background-color: #000;
-        }
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #000;
+}
 
-        .video-label {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
+.video-label {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 1em;
+    text-transform: capitalize;
+    z-index: 10;
+}
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+/* Controls Section */
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    gap: 15px;
+}
 
-        .control-button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            margin: 0 10px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s, transform 0.1s;
-        }
+.control-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s, background-color 0.3s;
+    box-shadow: var(--shadow);
+}
 
-        .control-button:hover {
-            background-color: #3a7bc8;
-        }
+.control-button:hover {
+    background-color: #3a7bc8;
+}
 
-        .control-button:active {
-            transform: scale(0.98);
-        }
+.control-button:active {
+    background-color: var(--button-active);
+    transform: scale(0.95);
+}
 
-        #hangupButton {
-            background-color: #e74c3c;
-        }
+/* Specific Button Colors */
+#hangupButton {
+    background-color: #e74c3c;
+}
 
-        #hangupButton:hover {
-            background-color: #c0392b;
-        }
+#hangupButton:hover {
+    background-color: #c0392b;
+}
 
-        .info-box {
-            background-color: white;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+#chatButton {
+    background-color: var(--secondary-color);
+}
 
-        .info-box h2 {
-            color: var(--primary-color);
-            margin-top: 0;
-        }
+#screenShareButton {
+    background-color: #2ecc71;
+}
 
-        .status-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
+/* Status and Information */
+.info-box {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: var(--shadow);
+    line-height: 1.6;
+}
 
-        .status-active {
-            background-color: #2ecc71;
-        }
+.info-box h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+}
 
-        .status-inactive {
-            background-color: #e74c3c;
-        }
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
 
-        @media (max-width: 768px) {
-            .video-container {
-                flex-direction: column;
-                height: auto;
-            }
+.status-active {
+    background-color: #2ecc71;
+}
 
-            .video-wrapper {
-                width: 100%;
-                height: 40vh;
-                margin-bottom: 20px;
-            }
-        }
+.status-inactive {
+    background-color: #e74c3c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .video-container {
+        flex-direction: column;
+        height: auto;
+        gap: 15px;
+    }
+
+    .video-wrapper {
+        height: 45vh;
+    }
+
+    .control-button {
+        padding: 10px;
+        font-size: 1em;
+    }
+}
+
     </style>
 </head>
 
@@ -174,12 +208,12 @@
 
         <div class="controls">
             <button id="startButton" class="control-button">Start Consultation</button>
-            <button id="hangupButton" class="control-button">End Consultation</button>
+            <button id="hangupButton" class="control-button leave">End Consultation</button>
         </div>
 
         <div class="info-box">
             <h2>Consultation Information</h2>
-            <p><strong>Status:</strong> <span class="status-indicator" id="connectionStatus"></span><span id="statusText">Not Connected</span></p>
+            <p><strong>Status:</strong> <span class="status-indicator"></span><span id="statusText">Not Connected</span></p>
             <p><strong>Patient:</strong> <span id="patientName">John Doe</span></p>
             <p><strong>Doctor:</strong> <span id="doctorName">Dr. Jane Smith</span></p>
         </div>
@@ -188,13 +222,15 @@
             <h2>Instructions</h2>
             <p>1. Click the "Start Consultation" button to begin your video call.</p>
             <p>2. Ensure your camera and microphone are working properly.</p>
-            <p>3. If you're the doctor, share this page's unique link with the patient to join the consultation.</p>
-            <p>4. Click "End Consultation" when you're finished.</p>
+            <p>3. Share the unique link with the other participant.</p>
+            <p>4. Click "End Consultation" when finished.</p>
         </div>
     </div>
-
+    
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-<script src="{{url_for('static', filename='main.js')}}"></script>
-<script src="{{url_for('static', filename='ga.js')}}"></script>
+<!-- <script src="{{url_for('static', filename='main.js')}}"></script>
+<script src="{{url_for('static', filename='ga.js')}}"></script> -->
+<script src="/Healios.ai/static/main.js"></script>
+     <script src="/Healios.ai/static/ga.js"></script>
 </body>
 </html>
