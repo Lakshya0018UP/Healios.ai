@@ -19,32 +19,31 @@ app.config['SQLALCHEMY_DATABASE_URI']="sqlite:///test.db"
 app.config["SECRET_KEY"]='thisisasecretkey'
 
 
-
 # Separate LoginManager for doctors
-# doc_login_manager = LoginManager()
-# doc_login_manager.init_app(app)
-# doc_login_manager.login_view = "doc_login"
+doc_login_manager = LoginManager()
+doc_login_manager.init_app(app)
+doc_login_manager.login_view = "doc_login"
 
-# # Doctor model loader
-# @doc_login_manager.user_loader
-# def load_doctor(doctor_id):
-#     return Docs.query.get(int(doctor_id))
+# Doctor model loader
+@doc_login_manager.user_loader
+def load_doctor(doctor_id):
+    return Docs.query.get(int(doctor_id))
 
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view = "login"
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.query.get(int(user_id))
-
-login_manager=LoginManager()
+login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view="login"
+login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+# login_manager=LoginManager()
+# login_manager.init_app(app)
+# login_manager.login_view="login"
+
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.query.get(int(user_id))
 
 
 db=SQLAlchemy(app)
@@ -376,6 +375,7 @@ def doctor_page():
 @app.route('/doc_profile',methods=['GET','POST'])
 @login_required
 def doc_profile():
+    print(current_user.username)
     doc_profile=current_user
     return render_template('doc_profile.html',doc_profile=doc_profile)
 

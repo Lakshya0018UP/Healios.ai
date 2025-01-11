@@ -150,7 +150,7 @@
 
         .hero {
 
-            background-image: url("/Healios.ai/static/images/x-ray-with-neon-colors_23-2151521338.avif");
+            background-image: url("/static/images/x-ray-with-neon-colors_23-2151521338.avif");
 
             background-size: cover;
             background-position: center;
@@ -687,7 +687,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Our AI chatbot (Healios)</h3>
                         <p class="feature-description">Get instant answers to your health queries and personalized support 24/7. Our AI-powered chatbot simplifies healthcare by providing reliable advice and guidance anytime, anywhere. Empower yourself with reliable health knowledge at your fingertips.</p>
-                        <a href="{{url_for('post-views')}}" class="feature-btn">Chat Now</a>
+                        <a href="{{url_for('view')}}" class="feature-btn">Chat Now</a>
                     </div>
                 </div>
 
@@ -710,7 +710,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Community Interaction Platform</h3>
                         <p class="feature-description">Share your thoughts and experiences with our community.</p>
-                        <a href="{{url_for('doc_list')}}" class="feature-btn">Access</a>
+                        <a href="{{url_for('bonding')}}" class="feature-btn">Access</a>
                     </div>
                 </div>
 
@@ -734,7 +734,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Measure Heart Rate</h3>
                         <p class="feature-description">Quickly measure your heart rate using our real-time monitoring tool powered by AI.</p>
-                        <a href="{{url_for('doc_list')}}" class="feature-btn">Measure Now</a>
+                        <button><a href="{{url_for('heartrate')}}" class="feature-btn">Measure Now</a></button>
                     </div>
                 </div>
 
@@ -754,7 +754,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Appointment Scheduling</h3>
                         <p class="feature-description">Easily book appointments with healthcare providers through our streamlined scheduling system. Stay on top of your health with reminders and confirmations.</p>
-                        <a href="{{url_for('doc_list')}}" class="feature-btn">Book Appointment</a>
+                        <a href="{{url_for('appointment')}}" class="feature-btn">Book Appointment</a>
                     </div>
                 </div>
 
