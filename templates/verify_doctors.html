@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Doctors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Doctors Pending Verification</h1>
+        {% if doctors_to_verify %}
+            <table border="1" class="verification-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Qualification</th>
+                        <th>Specialization</th>
+                        <th>License Number</th>
+                        <th>Years of Experience</th>
+                        <th>Additional Info</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doctor in doctors_to_verify %}
+                        <tr>
+                            <td>{{ doctor.user.name }}</td>
+                            <td>{{ doctor.user.email }}</td>
+                            <td>{{ doctor.qualification }}</td>
+                            <td>{{ doctor.specialization }}</td>
+                            <td>{{ doctor.license_number }}</td>
+                            <td>{{ doctor.years_of_experience }}</td>
+                            <td>{{ doctor.additional_info or "N/A" }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin_dashboard') }}">
+                                    <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+                                    <button type="submit" name="action" value="verify">Verify</button>
+                                    <button type="submit" name="action" value="reject">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No doctors pending verification.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

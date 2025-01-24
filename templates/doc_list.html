@@ -172,7 +172,7 @@
 </head>
 <body>
     <header>
-        <a href="{{url_for('dashboard')}}" class="dashboard-link">Dashboard</a>
+        <a href="{{url_for('user_dashboard')}}" class="dashboard-link">Dashboard</a>
         <h1>A network consisting of best doctors of the Nation!! Saving lives and working hard to make the nation safe</h1>
 
     </header>
@@ -182,9 +182,12 @@
             <div class="doctor-card">
                 <!-- <img src="https://source.unsplash.com/300x300/?doctor,male" alt="Dr. John Doe" class="doctor-image"> -->
                 <div class="doctor-info">
-                    <h2><strong>{{doctor.name}}</strong></h2>
-                    <p class="doctor-qualifications">{{ doctor.qualifications }}</p>
-                    <p class="doctor-specialties"><strong>Specialties:</strong> {{doctor.specialties}}</p>
+                    <h2><strong>{{doctor.user.name}}</strong></h2>
+                    <h2><strong>{{doctor.user.email}}</strong></h2>
+                    <p class="doctor-qualifications">{{ doctor.qualification }}</p>
+                    <p class="doctor-qualifications">{{ doctor.license_number }}</p>
+                    <p class="doctor-qualifications">{{ doctor.years_of_experience }}</p>
+                    <p class="doctor-specialties"><strong>Specialties:</strong> {{doctor.specialization}}</p>
                     <div class="doctor-actions">
                         <a href="mailto:{{doctor.email}}" class="email-link">Send Email</a>
                         <button><a href="{{ url_for('consult', id=doctor.id) }}" class="appointment-link">Click here to book an appointment</a></button>

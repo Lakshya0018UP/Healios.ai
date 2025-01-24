@@ -1,104 +1,160 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Heartbeat Demo</title>
-  <style>
-    /* Global Styles */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to bottom, #141e30, #243b55);
-      color: #f2f2f2;
-      text-align: center;
+<html>
+  <head>
+<!-- 2016 Gordon Williams, gw@pur3.co.uk
+
+Any copyright is dedicated to the Public Domain.
+http://creativecommons.org/publicdomain/zero/1.0/
+
+-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=320, initial-scale=1">
+    <title>Online Heart Rate Monitor</title>
+  </head>
+  <body>
+    <p>Allow this website to use your webcam, then place your finger lightly over the camera and wait for the trace to stabilise.</p>
+    <p>You will have most success when there is light behind your finger.</p>
+    <video id="v" width="100" height="100" style="display:none" muted></video>
+    <canvas id="c" width="100" height="100" style="display:none"></canvas>
+    <canvas id="g" width="320" height="30"></canvas><br/>
+    <div id="bpm">--</div>
+    
+  <script>
+var video, width, height, context, graphCanvas, graphContext, bpm;
+var hist = [];
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+
+var constraints = {video: true, audio:false};
+
+function initialize() {
+navigator.mediaDevices.enumerateDevices().then(function(devices) {
+  devices.forEach(function(device) {
+    console.log(device.kind + ": " + device.label +
+                " id = " + device.deviceId/*, JSON.stringify(device,null,2)*/);
+    if (device.kind=="videoinput" /*&& constraints.video===true*/)
+      constraints.video = { optional: [{sourceId: device.deviceId}, { fillLightMode: "on" }] };
+  });
+  initialize2();
+}).catch(function(err) {
+  console.log(err.name + ": " + err.message);
+});
+}
+
+  function initialize2() {
+    // The source video.
+    video = document.getElementById("v");
+    width = video.width;
+    height = video.height;
+
+    // The target canvas.
+    var canvas = document.getElementById("c");
+    context = canvas.getContext("2d");
+
+    // The canvas for the graph
+    graphCanvas = document.getElementById("g");
+    graphContext = graphCanvas.getContext("2d");
+ 
+    // The bpm meter
+    bpm = document.getElementById("bpm");
+    
+    // Get the webcam's stream.
+    if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then(startStream)
+        .catch(console.error)
+    } else {
+      navigator.getUserMedia(constraints, startStream, function () {});
+    }
+  }
+
+  function startStream(stream) {
+    video.srcObject = stream;
+    video.play();
+    // Ready! Let's start drawing.
+    requestAnimationFrame(draw);
+  }
+
+  function draw() {
+    var frame = readFrame();
+    if (frame) {
+      getIntensity(frame.data);      
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-top: 20px;
-      animation: fadeIn 2s ease-in-out;
+    // Wait for the next frame.
+    requestAnimationFrame(draw);
+  }
+
+  function readFrame() {
+    try {
+      context.drawImage(video, 0, 0, width, height);
+    } catch (e) {
+      // The video may not be ready, yet.
+      return null;
     }
 
-    p {
-      font-size: 1.2rem;
-      margin: 10px auto;
-      max-width: 600px;
-      line-height: 1.6;
-      opacity: 0.8;
-    }
+    return context.getImageData(0, 0, width, height);
+  }
 
-    /* Container for Video and Canvas */
-    div {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 20px auto;
-      flex-direction: column;
-    }
+  function getIntensity(data) {
+    var len = data.length;
+    var sum = 0;
 
-    video, canvas {
-      border: 3px solid #00bcd4;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      margin-top: 10px;
+    for (var i = 0, j = 0; j < len; i++, j += 4) {
+      sum += data[j] + data[j+1] + data[j+2];
     }
-
-    /* Animation for Interactive Elements */
-    canvas {
-      animation: pulse 3s infinite;
-    }
-
-    /* Keyframe Animations */
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(-10px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); border-color: #00bcd4; }
-      50% { transform: scale(1.05); border-color: #ff4081; }
-    }
-
-    /* Footer Note */
-    footer {
-      margin-top: 30px;
-      font-size: 0.9rem;
-      opacity: 0.6;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2rem;
+    //console.log(sum / len);   
+    hist.push({ bright : sum/len, time : Date.now() });
+    while (hist.length>graphCanvas.width) hist.shift();
+    // max and min
+    var max = hist[0].bright;
+    var min = hist[0].bright;
+    hist.forEach(function(v) {
+      if (v.bright>max) max=v.bright;
+      if (v.bright<min) min=v.bright;
+    });
+    // thresholds for bpm
+    var lo = min*0.6 + max*0.4;
+    var hi = min*0.4 + max*0.6;
+    var pulseAvr = 0, pulseCnt = 0;
+    // draw
+    var ctx = graphContext;
+    ctx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    hist.forEach(function(v,x) {
+      var y = graphCanvas.height*(v.bright-min)/(max-min);
+      ctx.lineTo(x,y);
+    });       
+    ctx.stroke();
+    // work out bpm
+    var isHi = undefined;
+    var lastHi = undefined;
+    var lastLo = undefined;
+    ctx.fillStyle = "red";
+    hist.forEach(function(v, x) {
+      if (isHi!=true && v.bright>hi) {
+        isHi = true;
+        lastLo = x;
       }
-
-      p {
-        font-size: 1rem;
+      if (isHi!=false && v.bright<lo) {
+        if (lastHi !== undefined && lastLo !== undefined) {
+          pulseAvr += hist[x].time-hist[lastHi].time;
+          pulseCnt++;
+          ctx.fillRect(lastLo,graphCanvas.height-4,lastHi-lastLo,4);
+        }
+        isHi = false;
+        lastHi = x;
       }
-
-      video, canvas {
-        width: 90%;
-        height: auto;
-      }
+    });
+    // write bpm
+    if (pulseCnt) {
+      var pulseRate = 60000 / (pulseAvr / pulseCnt);
+      bpm.innerHTML = pulseRate.toFixed(0)+" BPM ("+pulseCnt+" pulses)";
+    } else {
+      bpm.innerHTML = "-- BPM";
     }
-  </style>
-</head>
-<body>
-  <h1>Heartbeat Demo</h1>
-  <p>Wait for a few minutes before data is displayed.</p>
-  <p>For best results, try in a constantly well-lit space with minimal device and subject motion.</p>
+  }
 
-  <div>
-    <video hidden id="webcam" width="640" height="480"></video>
-    <canvas id="canvas" width="640" height="480"></canvas>
-  </div>
-
-  <footer>
-    <p>&copy; 2024 Healios.ai | All Rights Reserved</p>
-  </footer>
-
-  <script type='module' src="{{url_for('static', filename='index.js')}}"></script>
-</body>
+  addEventListener("DOMContentLoaded", initialize);
+  </script>
+  </body>
 </html>

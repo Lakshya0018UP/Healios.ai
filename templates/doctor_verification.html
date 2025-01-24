@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Doctor Verification</h2>
+    <form method="POST">
+        {{ form.csrf_token }}
+        
+        <label for="qualification">Qualification:</label>
+        {{ form.qualification }}
+        <br>
+
+        <label for="specialization">Specialization:</label>
+        {{ form.specialization }}
+        <br>
+
+        <label for="license_number">License Number:</label>
+        {{ form.license_number }}
+        <br>
+
+        <label for="years_of_experience">Years of Experience:</label>
+        {{ form.years_of_experience }}
+        <br>
+
+        <label for="additional_info">Additional Information (Optional):</label>
+        {{ form.additional_info }}
+        <br>
+
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

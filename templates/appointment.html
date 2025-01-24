@@ -164,7 +164,7 @@
                 <label for="doctor">Select Doctor:</label>
                 <select name="doctor" id="doctor">
                 {% for doctor in doctors %}
-                    <option value="{{ doctor.name }}">{{ doctor.name }}</option>
+                    <option value="{{ doctor.user.name }}">{{ doctor.user.name }}</option>
                 {% endfor %}
 
                 {{ form.submit(value="Book Now") }}

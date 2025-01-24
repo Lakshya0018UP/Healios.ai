@@ -1,0 +1,112 @@
+/* General Page Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    color: #007bff; /* Bootstrap blue */
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+/* Appointment List */
+ul {
+    list-style: none;
+    padding: 0;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+li {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+li:last-child {
+    border-bottom: none; /* Remove the border for the last item */
+}
+
+/* Appointment Details */
+li strong {
+    font-size: 16px;
+    color: #007bff;
+}
+
+li span {
+    font-size: 14px;
+    color: #555;
+}
+
+/* No Appointments Message */
+p {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    padding: 20px;
+    margin: 0;
+}
+
+/* Forms */
+form {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between form elements */
+}
+
+select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+button[type="submit"] {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    li {
+        padding: 15px;
+    }
+
+    form {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+    }
+}

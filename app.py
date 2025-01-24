@@ -5,29 +5,25 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,SubmitField,TextAreaField,SelectField
-from wtforms.validators import InputRequired,Length, ValidationError,Email
+from wtforms.validators import InputRequired,Length, ValidationError,Email,DataRequired,EqualTo
 from flask_migrate import Migrate
 from flask_cors import CORS
 import os
 import xlsxwriter
 import pandas as pd
 from flask_mail import Mail,Message
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app=Flask(__name__)
 bcrypt=Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI']="sqlite:///test.db"
 app.config["SECRET_KEY"]='thisisasecretkey'
 
-
-# Separate LoginManager for doctors
-doc_login_manager = LoginManager()
-doc_login_manager.init_app(app)
-doc_login_manager.login_view = "doc_login"
-
-# Doctor model loader
-@doc_login_manager.user_loader
-def load_doctor(doctor_id):
-    return Docs.query.get(int(doctor_id))
+app=Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI']="sqlite:///test.db"
+app.config["SECRET_KEY"]='thisisasecretkey'
+db=SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -35,7 +31,24 @@ login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return Users.query.get(int(user_id))
+# # Separate LoginManager for doctors
+# doc_login_manager = LoginManager()
+# doc_login_manager.init_app(app)
+# doc_login_manager.login_view = "doc_login"
+
+# # Doctor model loader
+# @doc_login_manager.user_loader
+# def load_doctor(doctor_id):
+#     return Docs.query.get(int(doctor_id))
+
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+# login_manager.login_view = "login"
+
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.query.get(int(user_id))
 
 # login_manager=LoginManager()
 # login_manager.init_app(app)
@@ -46,7 +59,7 @@ def load_user(user_id):
 #     return User.query.get(int(user_id))
 
 
-db=SQLAlchemy(app)
+
 migrate=Migrate(app,db,render_as_batch=True)
 cors=CORS(app)
 
@@ -203,45 +216,209 @@ class PresciptionForm(FlaskForm):
 e_prescription=[]
 
 
+
+class Users(db.Model,UserMixin):
+    id=db.Column(db.Integer,primary_key=True)
+    name=db.Column(db.String(80),nullable=False)
+    email=db.Column(db.String(80),nullable=False)
+    username=db.Column(db.String(80),unique=True,nullable=False)
+    password=db.Column(db.String(80),nullable=False)
+    role=db.Column(db.String(80),nullable=False)
+
+
+class DoctorVerification(db.Model):
+    id=db.Column(db.Integer,primary_key=True)
+    user_id=db.Column(db.Integer,db.ForeignKey('users.id'), nullable=False)
+    qualification = db.Column(db.String(200), nullable=False)
+    specialization = db.Column(db.String(100), nullable=False)
+    license_number = db.Column(db.String(100), unique=True, nullable=False)
+    years_of_experience = db.Column(db.Integer, nullable=False)
+    additional_info = db.Column(db.Text, nullable=True)
+    is_verified = db.Column(db.Boolean, default=False)
+
+    user = db.relationship('Users', backref=db.backref('doctor_verification', uselist=False))
+
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    name=StringField('Name', validators=[DataRequired()])
+    email=StringField('Email', validators=[DataRequired(),Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    role = SelectField('Role', choices=[('patient', 'Patient'), ('doctor', 'Doctor'), ('admin', 'Admin')])
+    submit = SubmitField('Register')
+
+    
+
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
+
+class DoctorVerificationForm(FlaskForm):
+    qualification = StringField('Qualification', validators=[DataRequired()])
+    specialization = StringField('Specialization', validators=[DataRequired()])
+    license_number = StringField('License Number', validators=[DataRequired()])
+    years_of_experience = StringField('Years of Experience', validators=[DataRequired()])
+    additional_info = TextAreaField('Additional Information (Optional)')
+    submit = SubmitField('Submit')
+
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if current_user.is_authenticated:
+         print(current_user.username)
+         return render_template('user_dashboard.html', user=current_user.username)
+    else:
+         return render_template('user_dashboard.html', user=None)  
+    
+
+@app.route('/register',methods=['GET','POST'])
+def register():
+    form=RegistrationForm()
+    if form.validate_on_submit():
+        hash_password=generate_password_hash(form.password.data)
+        new_user=Users(name=form.name.data,email=form.email.data,username=form.username.data,password=hash_password,role=form.role.data)
+        db.session.add(new_user)
+        db.session.commit()
+
+
+        if form.role.data=='doctor':
+            return redirect(url_for('doctor_verification',user_id=new_user.id))
+        
+        return redirect(url_for('login'))
+    return render_template('register.html',form=form)
+        
+@app.route('/doctor_verification/<int:user_id>',methods=['GET','POST'])
+def doctor_verification(user_id):
+    doctor_to_verify=Users.query.get_or_404(user_id)
+    form=DoctorVerificationForm()
+    if form.validate_on_submit():
+        verification_data=DoctorVerification(user_id=user_id,qualification=form.qualification.data,
+            specialization=form.specialization.data,
+            license_number=form.license_number.data,
+            years_of_experience=form.years_of_experience.data,
+            additional_info=form.additional_info.data)
+        db.session.add(verification_data)
+        db.session.commit()
+        return redirect(url_for('verification_pending'))
+    return render_template('doctor_verification.html',form=form)
+
 
 @app.route('/login',methods=['GET','POST'])
 def login():
-    form=Login()
+    form=LoginForm()
     if form.validate_on_submit():
-        user_in=User.query.filter_by(username=form.username.data).first()
-        if user_in:
-            if bcrypt.check_password_hash(user_in.password,form.password.data):
-                login_user(user_in)
-                return redirect('/dashboard')
+        user_in=Users.query.filter_by(username=form.username.data).first()
+        if user_in and check_password_hash(user_in.password,form.password.data):
+            login_user(user_in)
+
+            if user_in.role=='doctor':
+                doctor_in=DoctorVerification.query.filter_by(user_id=user_in.id).first()
+                if not doctor_in.is_verified:
+                    return redirect(url_for('verification_pending'))
+            return redirect(f'{user_in.role}_dashboard')
+    return render_template('login.html',form=form)
+    
+@app.route('/doc_login',methods=['GET','POST'])
+def doc_login():
+    form=LoginForm()
+    if form.validate_on_submit():
+        doctor_in=Users.query.filter_by(username=form.username.data).first()
+        if doctor_in and check_password_hash(doctor_in.password,form.password.data) and doctor_in.role=='doctor':
+            doctor_verify=DoctorVerification.query.filter_by(user_id=doctor_in.id).first()
+            if not doctor_verify.is_verified:
+                return redirect(url_for('verification_pending'))
+            login_user(doctor_in)
+            return redirect(url_for('doctor_dashboard'))
+    return render_template('doctor_login.html',form=form)
+
+
+
+@app.route('/patient_dashboard',methods=['GET','POST'])
+@login_required
+def user_dashboard():
+    user=current_user
+    return render_template('user_dashboard.html',user=user)
+
+@app.route('/doctor_dashboard',methods=['GET','POST'])
+@login_required
+def doctor_dashboard():
+    if current_user.role!='doctor':
+        return redirect(url_for('index'))
+    doctor_logged=current_user
+    return render_template('doctor_dashboard.html',doctor_logged=doctor_logged)
+
+
+@app.route('/admin_dashboard', methods=['GET', 'POST'])
+@login_required
+def admin_dashboard():
+    if current_user.role != 'admin':
+        return redirect(url_for('index'))
+    doctors_to_verify = DoctorVerification.query.filter_by(is_verified=False).all()
+    
+    if request.method == 'POST':
+        doctor_id = int(request.form.get('doctor_id'))
+        action = request.form.get('action')
+        doctor_verification = DoctorVerification.query.get_or_404(doctor_id)
+        
+        if action == 'verify':
+            doctor_verification.is_verified = True
+        elif action == 'reject':
+            db.session.delete(doctor_verification)
+        
+        db.session.commit()
+        flash(f'Doctor {action}ed successfully.', 'success')
+        return redirect(url_for('admin_dashboard'))
+    
+    return render_template('verify_doctors.html', doctors_to_verify=doctors_to_verify)
+
+@app.route('/verification_pending',methods=['GET','POST'])
+@login_required
+def verification_pending():
+    if current_user.role!='doctor':
+        return redirect(url_for('index'))
+    return render_template('verification_pending.html') 
+
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+
+# @app.route('/login',methods=['GET','POST'])
+# def login():
+#     form=Login()
+#     if form.validate_on_submit():
+#         user_in=User.query.filter_by(username=form.username.data).first()
+#         if user_in:
+#             if bcrypt.check_password_hash(user_in.password,form.password.data):
+#                 login_user(user_in)
+#                 return redirect('/dashboard')
                 
            
     
-    return render_template('login.html',form=form)
+#     return render_template('login.html',form=form)
 
-@app.route('/signup',methods=['GET','POST'])
-def signup():
-    form=RegisterForm()
+# @app.route('/signup',methods=['GET','POST'])
+# def signup():
+#     form=RegisterForm()
     
 
-    if form.validate_on_submit():
-        hashed_pass=bcrypt.generate_password_hash(form.password.data)
-        new_user=User(username=form.username.data,password=hashed_pass)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect('/login')
+#     if form.validate_on_submit():
+#         hashed_pass=bcrypt.generate_password_hash(form.password.data)
+#         new_user=User(username=form.username.data,password=hashed_pass)
+#         db.session.add(new_user)
+#         db.session.commit()
+#         return redirect('/login')
         
 
 
-    return render_template('signup.html',form=form)
+#     return render_template('signup.html',form=form)
 
-@app.route('/dashboard',methods=['GET','POST'])
-@login_required
-def dashboard():
-    user_logged=current_user
-    return render_template('dashboard.html',user_logged=user_logged)
+# @app.route('/dashboard',methods=['GET','POST'])
+# @login_required
+# def dashboard():
+#     user_logged=current_user
+#     return render_template('dashboard.html',user_logged=user_logged)
 
 @app.route('/bond',methods=['POST','GET'])
 @login_required
@@ -343,52 +520,52 @@ def like_post(id):
     like_count=Like.query.filter_by(likeID=liked_post.id).count()
     return render_template('like.html',form=form,like_count=like_count,liked_post=liked_post)
 
-@app.route('/doctor',methods=['GET','POST'])
-def doctor():
-    form=DoctorDetails()
-    if form.validate_on_submit():
-        hashed_doctor_pass=bcrypt.generate_password_hash(form.password.data)
-        new_doc=Docs(password=hashed_doctor_pass,name=form.name.data,email=form.email.data, qualifications=form.qualifications.data,specialties=form.specialties.data)
-        db.session.add(new_doc)
-        db.session.commit()
-        return redirect('/doc_login')
-    return render_template('doctor_signup.html',form=form)
+# @app.route('/doctor',methods=['GET','POST'])
+# def doctor():
+#     form=DoctorDetails()
+#     if form.validate_on_submit():
+#         hashed_doctor_pass=bcrypt.generate_password_hash(form.password.data)
+#         new_doc=Docs(password=hashed_doctor_pass,name=form.name.data,email=form.email.data, qualifications=form.qualifications.data,specialties=form.specialties.data)
+#         db.session.add(new_doc)
+#         db.session.commit()
+#         return redirect('/doc_login')
+#     return render_template('doctor_signup.html',form=form)
 
-@app.route('/doc_login',methods=['GET','POST'])
-def doc_login():
-    form=doctor_login()
-    if form.validate_on_submit():
-        doctor_in=Docs.query.filter_by(email=form.email.data).first()
-        if doctor_in:
-            if bcrypt.check_password_hash(doctor_in.password,form.password.data):
-                login_user(doctor_in)
-                return redirect('/doc_page')
+# @app.route('/doc_login',methods=['GET','POST'])
+# def doc_login():
+#     form=doctor_login()
+#     if form.validate_on_submit():
+#         doctor_in=Docs.query.filter_by(email=form.email.data).first()
+#         if doctor_in:
+#             if bcrypt.check_password_hash(doctor_in.password,form.password.data):
+#                 login_user(doctor_in)
+#                 return redirect('/doc_page')
 
-    return render_template('doctor_login.html',form=form)
+#     return render_template('doctor_login.html',form=form)
 
-@app.route('/doc_page',methods=['GET','POST'])
-@login_required
-def doctor_page():
-    doc_logged=current_user
-    return render_template('doc_page.html',doc_logged=doc_logged)
+# @app.route('/doc_page',methods=['GET','POST'])
+# @login_required
+# def doctor_page():
+#     doc_logged=current_user
+#     return render_template('doc_page.html',doc_logged=doc_logged)
 
-@app.route('/doc_profile',methods=['GET','POST'])
-@login_required
-def doc_profile():
-    print(current_user.username)
-    doc_profile=current_user
-    return render_template('doc_profile.html',doc_profile=doc_profile)
+# @app.route('/doc_profile',methods=['GET','POST'])
+# @login_required
+# def doc_profile():
+#     print(current_user.username)
+#     doc_profile=current_user
+#     return render_template('doc_profile.html',doc_profile=doc_profile)
 
 @app.route('/doc_list',methods=['GET','POST'])
 @login_required
 def doc_list():
-    res_doctors=Docs.query.all()
+    res_doctors=DoctorVerification.query.all()
     return render_template('doc_list.html',res_doctors=res_doctors)
 
 @app.route('/doc_details/<int:id>',methods=['GET','POST'])
 @login_required
 def consult(id):
-    doc_to_book=Docs.query.get_or_404(id)
+    doc_to_book=DoctorVerification.query.get_or_404(id)
     return render_template('doc_details.html',doc_to_book=doc_to_book)
 
 @app.route('/description/<int:id>',methods=['GET','POST'])
@@ -468,26 +645,26 @@ def download_feedback():
 @app.route('/appointment',methods=['GET','POST'])
 @login_required
 def appointment():
-    doctors=Docs.query.all()
+    doctors=DoctorVerification.query.all()
     form=AppointmentForm()
     if form.validate_on_submit():
         appointment=Appointments(name=form.name.data,email=form.email.data,date=form.date.data,time=form.time.data,author=current_user.username,doctor=form.doctor.data)
         db.session.add(appointment)
         db.session.commit()
-        return redirect('/dashboard')
+        return redirect('/patient_dashboard')
     return render_template('appointment.html',form=form,doctors=doctors)
 
 @app.route('/schedule',methods=['GET','POST'])
 @login_required
 def schedule():
-    appointment_scheduled=Appointments.query.filter_by(author=current_user.username).all()
+    appointment_scheduled=Appointments.query.filter_by(author=current_user.name).all()
     return render_template('schedule.html',appointment_scheduled=appointment_scheduled)
 
 @app.route('/doctor_appointment',methods=['GET','POST'])
 @login_required
 def doctor_appointment():
-    docs=Docs.query.all()
-    appointments=Appointments.query.filter_by(status='Pending',doctor=docs[0].name).all()
+    docs=DoctorVerification.query.all()
+    appointments=Appointments.query.filter_by(status='Pending',doctor=current_user.name).all()
     form=StatusForm()
     if form.validate_on_submit():
         return redirect(url_for('doctor_appointments'))
@@ -506,7 +683,7 @@ def update_status(appointment_id):
 @app.route('/prescription',methods=['GET','POST'])
 @login_required
 def prescription():
-    docs=Docs.query.all()
+    docs=DoctorVerification.query.all()
     form=PresciptionForm()
     if form.validate_on_submit():
         prescrip=Prescriptions(patient_name=form.name.data,email=form.email.data,doctor_name=form.doctor_name.data,medication=form.medication.data,dosage=form.dosage.data,instructions=form.instructions.data,diagnosis=form.diagnosis.data)
@@ -560,11 +737,12 @@ def view_prescription(id):
 @app.route('/view')
 @login_required
 def view():
-    doctor_name=session.get('doctor_name')
-    print(doctor_name)
-    docs=Docs.query.all()
-    prescriptions=Prescriptions.query.filter_by(doctor_name=docs[0].name).all()
-    return render_template('prescription_list.html',prescriptions=prescriptions)
+    session['doctor.user.name'] = current_user.name
+    print(current_user.name)
+    docs=DoctorVerification.query.all()
+    user_in=current_user.name
+    prescriptions=Prescriptions.query.filter_by(doctor_name=current_user.name).all()
+    return render_template('prescription_list.html',prescriptions=prescriptions,user_in=user_in)
 
 @app.route('/delete_prescription/<int:id>',methods=['GET','POST'])
 @login_required

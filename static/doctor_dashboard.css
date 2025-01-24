@@ -1,0 +1,73 @@
+/* style.css */
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #2c3e50; /* Solid dark background */
+    color: #ecf0f1; /* Light text color for contrast */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Content at the top */
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+}
+
+h1, p {
+    margin: 0;
+}
+
+header {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #34495e; /* Slightly darker header background */
+    color: #ecf0f1;
+    font-size: 1.8rem; /* Larger text size for emphasis */
+    text-align: left;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+a.button {
+    display: inline-block;
+    margin: 15px;
+    padding: 12px 25px;
+    font-size: 18px; /* Larger text size for buttons */
+    font-weight: bold;
+    color: #ecf0f1; /* Light text color */
+    text-decoration: none;
+    background-color: #3498db; /* Vibrant button color */
+    border: none;
+    border-radius: 30px; /* Rounded button for elegance */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+a.button:hover {
+    background-color: #2980b9; /* Darker shade on hover */
+    transform: translateY(-3px); /* Lift effect */
+}
+
+a.button:active {
+    background-color: #1c5986; /* Even darker when clicked */
+    transform: translateY(1px); /* Click effect */
+}
+
+.browsehappy {
+    background-color: #e74c3c; /* Red background for warning */
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.browsehappy a {
+    color: #fff; /* White for the link in the warning */
+    text-decoration: underline;
+}
+
+main {
+    margin-top: 40px;
+}
+

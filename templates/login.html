@@ -1,36 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Healios AI</title>
+{% extends 'base.html' %}
 
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+{% block content %}
+    <h2>Login</h2>
+    <form method="POST">
+        {{ form.csrf_token }}
+        
+        <label for="username">Username:</label>
+        {{ form.username }}
+        <br>
 
-</head>
-<body>
-    <div class="container">
-        <!-- Left Section -->
-        <div class="left-section">
-            <h1>Healios AI</h1>
-            <p>AI-Driven Health for a Better Tomorrow</p>
-        </div>
+        <label for="password">Password:</label>
+        {{ form.password }}
+        <br>
 
-        <!-- Right Section -->
-        <div class="right-section">
-            <h2>Please Enter the following details</h2>
-            <form method="POST" action=" ">
-                {{ form.hidden_tag() }}
-                {{ form.username(class_='log_username') }}
-                {{ form.password (class_='log_pass') }}
-                {{ form.submit }}
-            </form>
-            <p class="toggle-text">Don't have an account? <a href="{{ url_for('signup') }}">Create a New Account</a></p>
-            <a class="doctor-button" href="{{ url_for('doc_login') }}">If Doctor, Click Here</a>
-        </div>
-    </div>
-
-</body>
-</html>
-
+        <button type="submit">Login</button>
+    </form>
+    <a href="{{ url_for('doc_login') }}" class="doctor-login-link">Official Link for doctors to login</a>
+{% endblock %}

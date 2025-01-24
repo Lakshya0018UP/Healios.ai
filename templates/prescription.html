@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Prescription</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='prescription.css') }}">
 </head>
 <body>
     <h1>Create New Prescription</h1>
@@ -22,7 +23,7 @@
             <label for="doctor_name">Select Doctor:</label><br>
     <select name="doctor_name" id="doctor_name" class="form-control">
         {% for doctor in docs %}
-            <option value="{{ doctor.name }}">{{ doctor.name }}</option>
+            <option value="{{ doctor.user.name }}">{{ doctor.user.name }}</option>
         {% endfor %}
     </select><br>
     {% for error in form.doctor_name.errors %}
@@ -64,7 +65,7 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-    <a href="{{url_for('doctor_page')}}">Doctor Dashboard </a>
+    <a href="{{url_for('doctor_dashboard')}}">Doctor Dashboard </a>
     <a href="{{url_for('view')}}">Prescription List </a> 
 </body>
 </html>
