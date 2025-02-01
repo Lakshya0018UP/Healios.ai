@@ -648,7 +648,8 @@ def appointment():
     doctors=DoctorVerification.query.all()
     form=AppointmentForm()
     if form.validate_on_submit():
-        appointment=Appointments(name=form.name.data,email=form.email.data,date=form.date.data,time=form.time.data,author=current_user.username,doctor=form.doctor.data)
+        print(current_user.name)
+        appointment=Appointments(name=form.name.data,email=form.email.data,date=form.date.data,time=form.time.data,author=current_user.name,doctor=form.doctor.data) #current_user.username making error
         db.session.add(appointment)
         db.session.commit()
         return redirect('/patient_dashboard')
@@ -657,6 +658,7 @@ def appointment():
 @app.route('/schedule',methods=['GET','POST'])
 @login_required
 def schedule():
+    print(current_user.name)
     appointment_scheduled=Appointments.query.filter_by(author=current_user.name).all()
     return render_template('schedule.html',appointment_scheduled=appointment_scheduled)
 
