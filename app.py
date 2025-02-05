@@ -2,7 +2,7 @@ from flask import Flask,render_template,url_for,redirect,jsonify,flash,request,s
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin,login_user,LoginManager,login_required,logout_user,current_user
 from flask_bcrypt import Bcrypt
-from datetime import datetime
+from datetime import datetime,date
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,SubmitField,TextAreaField,SelectField
 from wtforms.validators import InputRequired,Length, ValidationError,Email,DataRequired,EqualTo
@@ -129,7 +129,6 @@ class Prescriptions(db.Model):
     instructions=db.Column(db.String(100),nullable=False)
     diagnosis=db.Column(db.String(100),nullable=False)
 
-
 class RegisterForm(FlaskForm):
     username=StringField(validators=[InputRequired(),Length(min=4,max=20)],render_kw={"placeholder":"Username"})
     password=PasswordField(validators=[InputRequired(),Length(min=4,max=20)],render_kw={"placeholder":"Password"})
@@ -238,6 +237,13 @@ class DoctorVerification(db.Model):
 
     user = db.relationship('Users', backref=db.backref('doctor_verification', uselist=False))
 
+class stepTracker(db.Model):
+    id=db.Column(db.Integer,primary_key=True)
+    user_id=db.Column(db.Integer,db.ForeignKey('users.id'), nullable=False)
+    steps=db.Column(db.Integer,nullable=False,default=0)
+    date = db.Column(db.Date, default=date.today, nullable=False)
+
+    user = db.relationship('Users', backref=db.backref('steps', lazy=True))
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -756,6 +762,33 @@ def delete_prescription(id):
     except:
         return('You cant delete this post')
     return render_template('prescription_list.html')
+
+@app.route('/steps',methods=['GET','POST'])
+@login_required
+def steps():
+    steps=stepTracker.query.all()
+    return render_template('steps.html',username=current_user.name,steps=steps)
+
+@app.route('/update_steps',methods=['POST'])
+@login_required
+def update_steps():
+    data=request.get_json()  #Pickup whole data from front end
+    steps=data.get('steps',0) #pickup steps from data and if not found then put them equal to 0
+
+    record=stepTracker.query.filter_by(user_id=current_user.id,date=date.today()).first()
+    if record:
+        record.steps=steps
+    else:
+        new_record=stepTracker(user_id=current_user.id,date=date.today(),steps=steps)
+        db.session.add(new_record)
+        db.session.commit()
+
+@app.route('/get_steps',methods=['GET','POST'])
+@login_required
+def show_steps():
+    step_history=stepTracker.query.filter_by(user_id=current_user.id).all()
+    steps_list = [{"date": str(step.date), "steps": step.steps} for step in step_history]
+    return jsonify(steps_list)
 
 if __name__=='__main__':
     app.run(port=5000,debug=True, host='0.0.0.0')

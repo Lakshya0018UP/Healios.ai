@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step Tracker</title>
+</head>
+<body>
+    <h1>Welcome, {{ username }}</h1>
+    <h2>Step Tracker</h2>
+    <p>Steps: <span id="stepCount">{{steps.steps}}</span></p>
+    <button onclick="startTracking()">Start Tracking</button>
+
+    <h3>Step History</h3>
+    <ul id="stepHistory"></ul>
+
+    <script>
+        let prevPosition = null;
+        let stepCount = 0;
+        const stepThreshold = 1.5; // Approximate step distance in meters
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth radius in meters
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c;
+        }
+
+        function trackSteps(position) {
+            const { latitude, longitude } = position.coords;
+
+            if (prevPosition) {
+                const distance = calculateDistance(prevPosition.lat, prevPosition.lon, latitude, longitude);
+                
+                if (distance >= stepThreshold) {
+                    stepCount++;
+                    document.getElementById('stepCount').textContent = stepCount;
+
+                    // Send step count to Flask
+                    fetch('/update_steps', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ steps: stepCount })
+                    });
+                }
+            }
+
+            prevPosition = { lat: latitude, lon: longitude };
+        }
+
+        function startTracking() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(trackSteps, console.error, { enableHighAccuracy: true });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function fetchStepHistory() {
+            fetch('/get_steps')
+                .then(response => response.json())
+                .then(data => {
+                    const stepHistory = document.getElementById('stepHistory');
+                    stepHistory.innerHTML = "";
+                    data.forEach(entry => {
+                        const li = document.createElement('li');
+                        li.textContent = `Date: ${entry.date}, Steps: ${entry.steps}`;
+                        stepHistory.appendChild(li);
+                    });
+                });
+        }
+
+        window.onload = fetchStepHistory;
+    </script>
+</body>
+</html>
