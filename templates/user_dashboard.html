@@ -1,1029 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Healios AI - User Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healios.Ai</title>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+
+   
+    <link rel="stylesheet" href="{{ url_for('static', filename='user_dashboard.css') }}">
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            height: 100%;
-            background-image: linear-gradient(to right, white, rgb(174, 209, 237));
-            scroll-behavior: smooth;
-        }
-
-        header {
-            background-image: linear-gradient(to right, rgb(213, 213, 220), #63aef0);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        header.shrink {
-            padding: 0.5rem 2rem;
-            background-image: linear-gradient(to right, rgb(132, 132, 135), #5fb8f4);
-        }
-
-        .logo {
-
-         
-
-    background-image: url(/static/images/healiosLogo.png); 
-    background-size: contain; 
-    background-repeat: no-repeat; 
-    background-position: center; 
-    width: 200px; 
-    height: 50px; 
-    display: inline-block; 
-    color: #2288e1;
-}
-
-
-
-        nav {
-            display: flex;
-            align-items: center;
-        }
-
-        .nav-links {
-            display: flex;
-            justify-content: flex-end;
-            flex-grow: 1;
-            margin-right: 1rem;
-        }
-
-        .nav-links a {
-            color: #000;
-            text-decoration: none;
-            margin: 0 1rem;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-        }
-
-        .nav-links a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-
-        .user-info {
-            position: relative;
-            margin-left: 2rem;
-        }
-
-        .user-icon {
-            background-color: #fff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .user-icon:hover {
-            background-color: #f0f0f0;
-        }
-
-        .user-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 50px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 1rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            flex-direction: column;
-            align-items: flex-start;
-            min-width: 150px;
-        }
-
-        .user-menu.active {
-            display: flex;
-        }
-
-        .user-menu span {
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .logout-btn {
-            background-color: #ff3860;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 0.5rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .logout-btn:hover {
-            background-color: #ff1443;
-        }
-
-        .hero {
-
-            background-image: url("/static/images/x-ray-with-neon-colors_23-2151521338.avif");
-
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            perspective: 1000px;
-        }
-
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 1;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            color: #fff;
-            transform: translateZ(0);
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            margin: 0;
-            transform: translateZ(50px);
-        }
-
-        .tagline {
-            font-size: 1.5rem;
-            margin: 0.5rem 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            color: #fffefe;
-            font-weight: 500;
-            transform: translateZ(30px);
-        }
-
-        .underline6 {
-            width: 40%;
-            height: 4px;
-            background-color: #81daec;
-            margin: 1.5rem auto;
-            transform: translateZ(50%);
-        }
-        .underline {
-            width: 100px;
-            height: 3px;
-            background-color: #2b2e2f;
-            margin-top: 0.5rem;
-            margin-left: 10%;
-        }
-
-        .search-bar {
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 30px;
-            transform: translateZ(40px);
-        }
-
-        .search-bar form {
-            display: flex;
-            background-color: rgba(244, 241, 241, 0.5);
-            border-radius: 50px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .search-bar form:hover,
-        .search-bar form:focus-within {
-            background-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-        }
-
-        .search-bar input {
-            flex-grow: 1;
-            padding: 15px 20px;
-            border: none;
-            background: transparent;
-            color: #fff;
-            font-size: 1.1rem;
-        }
-
-        .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .search-bar button {
-            background-color: #81daec;
-            border: none;
-            padding: 15px 25px;
-            color: #000;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .search-bar button:hover {
-            background-color: #5fcfea;
-        }
-
-              
-        .about-section {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        .background-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 50%;
-            height: 60%;
-             background-color: #41afe6;
-             opacity: 0.4;
-            background-size: cover;
-            background-position: center;
-            left: 60%;
-        
-            /* filter: grayscale(100%); */
-            animation: zoomBackground 20s infinite alternate;
-        }
-        @keyframes zoomBackground {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.5); }
-        }
-        .background-image1 {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 40%;
-            height: 70%;
-            background-color: #41afe6;
-            opacity: 0.3;
-            background-size: cover;
-            background-position: center;
-            right: 60%;
-            top: 50%;
-            /* filter: grayscale(100%); */
-            animation: zoomBackground 20s infinite alternate;
-        }
-        .content-card {
-            position: relative;
-            width: 90%;
-            max-width: 600px;
-            height: 50%;
-            background-color: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            animation: slideIn 1s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        .underline {
-            width: 50px;
-            margin-left: 10px;
-            height: 3px;
-            background-color: #00e1ff;
-            margin-bottom: 20px;
-            animation: growWidth 1s ease-out;
-        }
-        @keyframes growWidth {
-            from { width: 0; }
-            to { width: 100px; }
-        }
-        p {
-            font-size: 1.25rem;
-            line-height: 1.6;
-            color: #333;
-            animation: fadeIn 1s ease-out 0.5s both;
-        }
-        @media (max-width: 768px) {
-            .content-card {
-                width: 90%;
-                padding: 30px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-        }
-
-        .services-section {
-            background: linear-gradient(to right, #eef1f1, #93c8e3);
-            padding: 5rem 3rem;
-            position: relative;
-            overflow: hidden;
-            perspective: 1000px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .underline {
-            height: 4px;
-            width: 100px;
-            background-color: #007bff;
-            margin: 0 auto 3rem;
-        }
-
-        .feature {
-            display: flex;
-            align-items: center;
-            margin-bottom: 6rem;
-            opacity: 1;
-            transition: transform 0.5s ease, box-shadow 0.5s ease;
-            transform-style: preserve-3d;
-        }
-
-        .feature:hover {
-            transform: scale(1.05) rotateY(5deg);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .feature:nth-child(even) {
-            flex-direction: row-reverse;
-        }
-
-        .feature-image {
-            flex: 1;
-            height: 350px;
-            position: relative;
-            overflow: hidden;
-            transform: translateZ(50px);
-        }
-
-        .feature-image img, .feature-image dotlottie-player {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.5s ease;
-        }
-
-        .feature:hover .feature-image img,
-        .feature:hover .feature-image dotlottie-player {
-            transform: scale(1.1);
-        }
-
-        .feature-content {
-            flex: 1;
-            padding: 2rem;
-            transform: translateZ(30px);
-        }
-
-        .feature-title {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            transition: transform 0.5s ease;
-        }
-
-        .feature:hover .feature-title {
-            transform: translateY(-5px);
-        }
-
-        .feature-description {
-            margin-bottom: 1.5rem;
-            transition: transform 0.5s ease;
-        }
-
-        .feature:hover .feature-description {
-            transform: translateY(-3px);
-        }
-
-        .feature-btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, transform 0.5s ease;
-        }
-
-        .feature-btn:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px) scale(1.05);
-        }
-
-        @media (max-width: 768px) {
-            .feature, .feature:nth-child(even) {
-                flex-direction: column;
-            }
-
-            .feature-image, .feature-content {
-                width: 100%;
-            }
-        }
-
-        .footer {
-            background-size: cover;
-            background-position: center;
-            background-image: linear-gradient(to right, rgb(138, 138, 143), #9fd3f5);
-            padding: 2rem 0 2rem;
-            font-family: Arial, sans-serif;
-            position: relative;
-        }
-
-        .footer::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: linear-gradient(to right, rgb(114, 114, 117), #5fb8f4);
-            z-index: 1;
-        }
-
-        .footer-container {
-            display: flex;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .contact-details a,
-        .contact-details p {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            text-decoration: none;
-            color: #f2f2f2;
-            font-size: 1.1rem;
-        }
-
-        .contact-details i {
-            margin-right: 10px;
-            color: #303031;
-            font-size: 1.2rem;
-        }
-
-        .footer h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #00050a;
-            font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-        }
-
-        .footer p {
-            margin-bottom: 0.5rem;
-            color: white;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .footer-link {
-            display: block;
-            margin: 10px 0;
-            color: #e6e8e8;
-            text-decoration: solid;
-            font-size: 1.1rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        .footer-link:hover {
-            color: #ffffff;
-            transform: translateX(10px);
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-link {
-            font-size: 1.5rem;
-            color: #545656;
-            text-decoration: none;
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-
-        .social-link:hover {
-            color: #ffffff;
-            transform: scale(1.2) rotate(10deg);
-        }
-
-        .submit-btn {
-            background-color: #ff1486;
-            color: #1e1c1c;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            background-color: #7eb7db;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding: 0.1rem;
-            border-top: 2px solid rgb(255, 255, 255);
-            position: relative;
-            background-color: #3b3c3e;
-            text-decoration-color: black;
-            z-index: 1;
-        }
-
-        @media (max-width: 768px) {
-            .footer-container {
-                flex-direction: column;
-            }
-
-            .footer-info,
-            .footer-form {
-                flex-basis: 100%;
-                margin-bottom: 2rem;
-            }
-        }
-    </style>
 </head>
 <body>
-    <header id="header">
-        <div class="logo"></div>
+
+<header>
         <nav>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="logo">
+                <img src="/static/images/logo.png" alt="Healthcare Logo">
             </div>
-            <div class="nav-links" id="navLinks">
-                <a href="#home">Home</a>
-                <a href="#about">About</a>
-                <a href="#services">Services</a>
-                <a href="#feedback">Feedback</a>
-            </div>
-            <div class="user-info">
-                <div class="user-icon" onclick="toggleUserMenu()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
+                <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#feedback">Feedback</a></li>
+                
+            </ul>
+            <li class="profile">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile Icon" id="profileIcon"  onclick="toggleMenu()">
+
+
+         <div class="sub-menu-wrap" id="subMenu" >
+            <div class="sub-menu">
+                <div class="user-info">
+                    <img src="/static/images/logo.png" alt="">
+                    <h3>Healios-AI</h2>
+
                 </div>
-                <div class="user-menu" id="userMenu">
-                    {% if user %}
+                <hr>
+
+            <h4> Welcome to Our Services</h4>
+            {% if user %}
         <h1>Welcome, {{ user.name }}!</h1>
         <p>You are successfully logged in. Enjoy our services.</p>
-        <a href="{{ url_for('logout') }}">Logout</a>
+        
         <a href="{{url_for('logout')}}" class="logout-btn">Logout</a>
     {% else %}
         <h1>Welcome to Our Service!</h1>
         <p>Please <a href="{{ url_for('login') }}">log in</a> to access our features.</p>
         
     {% endif %}
-                    
-                </div>
             </div>
-        </nav>
-    </header>
-    <main>
-        <section class="hero" id="home">
-            <div class="hero_bg"></div>
-            <div class="hero-content">
-                <div class="search-bar">
-                    <form action="#" method="get">
-                        <input type="text" placeholder="Search for health services..." aria-label="Search for health services">
-                        <button type="submit">Search</button>
-                    </form>
-                </div>
-                <h1>Healios-AI</h1>
-                <div class="underline6"></div>
-                <p class="tagline">
-                    Making quality healthcare access easy and affordable
-                </p>
-            </div>
-        </section>
-
-        <section class="about-section">
-            <div class="background-image"></div>
-            <div class="background-image1"></div>
-            <div class="content-card">
-                <h1>About Us</h1>
-                <div class="underline"></div>
-                <p>
-                    Healios-AI is a cutting-edge health tech platform committed to making healthcare more accessible and
-                    personalized. By using advanced AI, we provide comprehensive services tailored to different needs,
-                    from urban centers to underserved areas. Our goal is to merge innovation with accessibility to
-                    revolutionize personal health management.
-                </p>
-            </div>
-        </section>
-
-        <section class="services-section" id="services">
-            <div class="container">
-                <h2>Our Services</h2>
-                <div class="underline"></div>
-
-                <div class="feature">
-                    <div class="feature-image">
-                        <dotlottie-player src="https://lottie.host/ccb82331-7fc4-4e19-8c2c-1f592fbdb495/8cwA5DK9Rk.lottie" background="transparent" speed="0.2" style="width: 100%; height: 100%" loop autoplay></dotlottie-player>
-                    </div>
-                    <div class="feature-content">
-                        <h3 class="feature-title">Telemedicine Facilitation</h3>
-                        <p class="feature-description">Connect with doctors for virtual consultaions via video or chat anytime, anywhere. Simplify healthcare access with seamless telemedicine features.</p>
-                        <a href="{{url_for('video')}}" class="feature-btn">Start Consultation</a>
-                    </div>
-                </div>
-
-
-                <div class="feature">
-                    <div class="feature-image">
-                        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-                        <dotlottie-player src="https://lottie.host/036c827c-66cc-494c-8807-5ac968f9abc9/9UQeteb7XX.lottie" background="transparent" speed="0.5" style="width: 100%; height: 100%" loop autoplay></dotlottie-player>
-                    </div>
-                    <div class="feature-content">
-                        <h3 class="feature-title">Our AI chatbot (Healios)</h3>
-                        <p class="feature-description">Get instant answers to your health queries and personalized support 24/7. Our AI-powered chatbot simplifies healthcare by providing reliable advice and guidance anytime, anywhere. Empower yourself with reliable health knowledge at your fingertips.</p>
-                        <a href="{{url_for('view')}}" class="feature-btn">Chat Now</a>
-                    </div>
-                </div>
-
-                <div class="feature">
-                    <div class="feature-image">
-                        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-                        <dotlottie-player src="https://lottie.host/e188e25d-8c18-46b1-991a-426ce50526b6/Jc4pBdCTVa.lottie" background="transparent" speed="0.6" style="width: 100%; height: 100%" loop autoplay></dotlottie-player>
-                    </div>
-                    <div class="feature-content">
-                        <h3 class="feature-title">Health Data Dashboards</h3>
-                        <p class="feature-description">Track your health metrics and trends through interactive AI-powered dashboards. Stay informed and make smarter health decisions.</p>
-                        <a href="{{url_for('doc_list')}}" class="feature-btn">View Dashboard</a>
-                    </div>
-                </div>
-                <div class="feature">
-                    <div class="feature-image">
-                        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-                        <dotlottie-player src="https://lottie.host/f1218af0-27da-4dd8-b090-d36536ccc21d/WTgnPrsTmQ.lottie" background="transparent" speed="0.5" style="width: 100%; height: 100%" loop autoplay></dotlottie-player>
-                    </div>
-                    <div class="feature-content">
-                        <h3 class="feature-title">Community Interaction Platform</h3>
-                        <p class="feature-description">Share your thoughts and experiences with our community.</p>
-                        <a href="{{url_for('bonding')}}" class="feature-btn">Access</a>
-                    </div>
-                </div>
-
-                <div class="feature">
-                    <div class="feature-image">
-                        <dotlottie-player src="https://lottie.host/22bf239b-c028-49ab-b4f8-70b0e690a243/GCCrUG9V0j.lottie" background="transparent" speed="0.5" style="width: 100%; height: 100%" loop autoplay></dotlottie-player>
-                    </div>
-                    <div class="feature-content">
-                        <h3 class="feature-title">Doctor List</h3>
-                        <p class="feature-description">Browse our extensive list of qualified healthcare professionals.</p>
-                        <a href="{{url_for('doc_list')}}" class="feature-btn">View List</a>
-                    </div>
-                </div>
-
-                
-
-                <div class="feature">
-                    <div class="feature-image">
-                        <dotlottie-player src="https://lottie.host/feec2331-0cc6-4028-9c89-9aa21b3a3e92/SFwHRX4Wks.lottie" background="transparent" speed="0.5" style="width: 100%; height: 100%" loop autoplay></dotlottie-player>
-                    </div>
-                    <div class="feature-content">
-                        <h3 class="feature-title">Measure Heart Rate</h3>
-                        <p class="feature-description">Quickly measure your heart rate using our real-time monitoring tool powered by AI.</p>
-                        <button><a href="{{url_for('heartrate')}}" class="feature-btn">Measure Now</a></button>
-                    </div>
-                </div>
-
-                
-
-                <div class="feature">
-                    <div class="feature-image">
-                        <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.3.0/dist/dotlottie-wc.js" 
-                        type="module"
-                        ></script>
-                        <dotlottie-wc
-                         src="https://lottie.host/5b378507-0a63-4677-aba3-118092697e75/0n6JZ4hUNZ.lottie"
-                         autoplay
-                         loop
-                        ></dotlottie-wc>
-                    </div>
-                    <div class="feature-content">
-                        <h3 class="feature-title">Appointment Scheduling</h3>
-                        <p class="feature-description">Easily book appointments with healthcare providers through our streamlined scheduling system. Stay on top of your health with reminders and confirmations.</p>
-                        <a href="{{url_for('appointment')}}" class="feature-btn">Book Appointment</a>
-                    </div>
-                </div>
-
-               
-            </div>
-        </section>
-
-        <footer class="footer">
-            <div class="footer-container" id="contact">
-                <div class="footer-info">
-                    <h3>Contact Us</h3>
-                    <div class="underline2"></div>
-                    <div class="contact-details">
-                        <a href="mailto:rigvedbhargav@gmail.com">
-                            <i class="fas fa-envelope"></i> rigvedbhargav@gmail.com
-                        </a>
-                        <a href="tel:+916203522100">
-                            <i class="fas fa-phone-alt"></i> +916203522100
-                        </a>
-                        <p><i class="fas fa-map-marker-alt"></i>Pune</p>
-                    </div>
-                </div>
-                <div class="footer-left">
-                    <h3>Stay Connected</h3>
-                    <div class="underline2"></div>
-                    <p>
-                        <a href="{{ url_for('feedback') }}" class="footer-link">Share Feedback</a>
-                    </p>
-                    <p>
-                        <a href="{{ url_for('appointment') }}" class="footer-link">Book Appointment</a>
-                    </p>
-                    <p>
-                        <a href="{{ url_for('schedule') }}" class="footer-link">View Schedule</a>
-                    </p>
-                </div>
-                <div class="footer-right">
-                    <h3>Follow Us</h3>
-                    <div class="underline2"></div>
-                    <div class="social-icons">
-                        <a href="https://www.linkedin.com/in/your-profile" target="_blank" class="social-link">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
-                        <a href="https://twitter.com/your-profile" target="_blank" class="social-link">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="https://facebook.com/your-profile" target="_blank" class="social-link">
-                            <i class="fab fa-facebook"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <div class="footer-bottom">
-            <p style="color: rgb(252, 252, 252)">
-                &copy; 2024 Healios AI. All rights reserved.
-            </p>
         </div>
+
+      </nav>
+</header>
+
+<script>
+    let subMenu=document.getElementById("subMenu");
+    function toggleMenu(){
+        subMenu.classList.toggle("open-menu");
+    }
+</script>
+
+
+    
+
+    <main id="home">
+        <section class="hero">
+            <img src="/static/images/neon_xray.avif" alt="Healthcare Image">
+            <div class="hero-content">
+                <h1>Welcome To Healios.Ai</h1>
+                <p>Providing accessible and affordable healthcare for everyone.</p>
+                <a href="#services" class="btn">Explore Services</a>
+            </div>
+        </section>
     </main>
+    
+    
+    <section class="about-section">
+        <div class="about-container">
+          <div class="about-image">
+            <img src="/static/images/Medical_Center.jpg" alt="About Us"> 
+          </div>
+          <div class="about-text">
+            <h2>About Us</h2>
+            <p>
+            Healios-AI is a cutting-edge healthcare tech platform committed to making healthcare
+            healthcare more accessible and personalized. by using advanced Ai,
+            we provide comprehensive services tailored to different needs, from 
+            urban centersto underserved areas. Our goal is to merge innovation 
+            with accessibility to revolutionize personal health management. 
+        </p> 
+            <p>
+              Our mission is to make quality healthcare accessible to everyone, anytime, anywhere.
+            </p>
+            <a href="https://www.linkedin.com/company/healios-ai/posts/?feedView=all" class="btn">Learn More</a>
+          </div>
+        </div>
+      </section>
+    
 
-    <script>
-        $(".slider").owlCarousel({
-            loop: true,
-            autoplay: true,
-            autoplayTimeout: 2000,
-            autoplayHoverPause: true,
-        });
+       
 
-        function toggleUserMenu() {
-            var menu = document.getElementById("userMenu");
-            menu.classList.toggle("active");
-        }
 
-        function toggleMenu() {
-            var navLinks = document.getElementById("navLinks");
-            navLinks.classList.toggle("active");
-        }
 
-        window.addEventListener("scroll", function () {
-            var header = document.getElementById("header");
-            if (window.scrollY > 50) {
-                header.classList.add("shrink");
-            } else {
-                header.classList.remove("shrink");
-            }
-        });
 
-        window.addEventListener("resize", function () {
-            var navLinks = document.getElementById("navLinks");
-            if (window.innerWidth > 768) {
-                navLinks.classList.remove("active");
-            }
-        });
+    
+    <section class="services-section" id="services">
+        <div class="container">
+            <h2>Our Services</h2>
+            <div class="underline"></div>
+    
+            <div class="feature">
+                <div class="feature-image">
+                    <dotlottie-player src="https://lottie.host/ccb82331-7fc4-4e19-8c2c-1f592fbdb495/8cwA5DK9Rk.lottie" background="transparent" speed="0.5" style="width: 100%; height: 100%" loop autoplay></dotlottie-player>
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Video Consultation</h3>
+                    <p class="feature-description">Connect with doctors for virtual consultations via video or chat anytime, anywhere.</p>
+                   <!-- <a href="#" class="feature-btn">Start Consultation</a>-->
+                    <a href="{{url_for('video')}}" class="feature-btn">Start Consultation</a>
+                </div>
+            </div>
+    
+            <div class="feature">
+                <div class="feature-image">
 
-        gsap.registerPlugin(ScrollTrigger);
+                    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+                    <dotlottie-player src="https://lottie.host/e05e6c3d-e972-49b8-9c8f-47a914d9035a/K4DLR8B9tT.lottie" background="transparent" speed="1" style="width: 300px; height: 300px" loop autoplay></dotlottie-player>
 
-        gsap.fromTo(
-            ".hero-title",
-            { opacity: 0, y: 50, scale: 0.9 },
-            {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                ease: "power3.out",
-                duration: 1.5,
-                delay: 0.5,
-            }
-        );
 
-        gsap.fromTo(
-            ".tagline",
-            { opacity: 0, y: 30, scale: 0.9 },
-            {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                ease: "power3.out",
-                duration: 1.2,
-                delay: 0.8,
-            }
-        );
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Our AI Chatbot (Healios)</h3>
+                    <p class="feature-description">Get instant healthcare advice from our AI-powered chatbot Healios.</p>
+                    <!--<a href="#" class="feature-btn">Chat Now</a>-->
+                    <a href="{{url_for('view')}}" class="feature-btn">Chat Now</a>
+                </div>
+            </div>
+    
+            <div class="feature">
+                <div class="feature-image">
+                    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+<dotlottie-player src="https://lottie.host/0546def3-e08d-4e51-bab5-80eef7baa47d/nNwf6Kv1vt.lottie" background="transparent" speed="1" style="width: 300px; height: 300px" loop autoplay></dotlottie-player>
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Health Data Dashboards</h3>
+                    <p class="feature-description">Monitor your health with personalized dashboards and analytics.</p>
+                   <!-- <a href="#" class="feature-btn">View Dashboard</a>-->
 
-        gsap.fromTo(
-            ".underline",
-            { opacity: 0, scaleX: 0 },
-            {
-                opacity: 1,
-                scaleX: 1,
-                transformOrigin: "center",
-                ease: "power2.out",
-                duration: 1,
-                delay: 1.1,
-            }
-        );
+                    <a href="{{url_for('doc_list')}}" class="feature-btn">View Dashboard</a>
+                </div>
+            </div>
+    
+            <div class="feature">
+                <div class="feature-image">
 
-        gsap.to(".hero-content", {
-            scrollTrigger: {
-                trigger: ".hero",
-                start: "top top",
-                end: "bottom top",
-                scrub: 1,
-            },
-            y: -200,
-            scale: 1.1,
-            ease: "none",
-        });
+                    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+<dotlottie-player src="https://lottie.host/320fa6d4-26f0-46e8-bd8f-d9547d48d426/aJSpoeGuFq.lottie" background="transparent" speed="1" style="width: 300px; height: 300px" loop autoplay></dotlottie-player>
 
-        gsap.to(".hero", {
-            scrollTrigger: {
-                trigger: ".hero",
-                start: "top top",
-                end: "bottom top",
-                scrub: 1,
-            },
-            backgroundPosition: "center 80%",
-            ease: "none",
-        });
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Post Views</h3>
+                    <p class="feature-description">Share your thoughts and experiences with our community.</p>
+                   <!-- <a href="#" class="feature-btn">Join Now</a>-->
+                    <a href="{{url_for('bonding')}}" class="feature-btn">Access</a>
+                </div>
+            </div>
+    
+            <div class="feature">
+                <div class="feature-image">
+                    <dotlottie-player src="https://lottie.host/e188e25d-8c18-46b1-991a-426ce50526b6/Jc4pBdCTVa.lottie" background="transparent" speed="0.5" style="width: 100%; height: 100%" loop autoplay></dotlottie-player>
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Doctor List</h3>
+                    <p class="feature-description">Browse our extensive list of qualified healthcare professionals.</p>
+                   <!-- <a href="#" class="feature-btn">View List</a>-->
+                   <a href="{{url_for('doc_list')}}" class="feature-btn">View Dashboard</a>
+                </div>
+            </div>
+    
+            <div class="feature">
+                <div class="feature-image">
+                    <dotlottie-player src="https://lottie.host/feec2331-0cc6-4028-9c89-9aa21b3a3e92/SFwHRX4Wks.lottie" background="transparent" speed="0.5" style="width: 100%; height: 100%" loop autoplay></dotlottie-player>
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Measure Heart Rate</h3>
+                    <p class="feature-description">Quickly measure your heart rate using our real-time monitoring tool powered by AI.</p>
+                  <!--  <a href="#" class="feature-btn">Measure Now</a>-->
 
-        gsap.utils.toArray("section").forEach((section, index) => {
-            if (section.id !== "home") {
-                gsap.from(section, {
-                    opacity: 0,
-                    y: 50,
-                    scale: 0.95,
-                    scrollTrigger: {
-                        trigger: section,
-                        start: "top 80%",
-                        end: "top 20%",
-                        scrub: 1,
-                        once: false,
-                    },
-                });
-            }
-        });
+                    <a href="{{url_for('heartrate')}}" class="feature-btn">Measure Now</a>
+                </div>
+            </div>
+    
+            <div class="feature">
+                <div class="feature-image">
+                    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+                    <dotlottie-player src="https://lottie.host/f37e3e5b-2fcd-40ba-a513-3ef29bab52af/ksePq9WJ0z.lottie" background="transparent" speed="1" style="width: 300px; height: 300px" loop autoplay></dotlottie-player>
+                </div>
+                <div class="feature-content">
+                    <h3 class="feature-title">Appointment Scheduling</h3>
+                    <p class="feature-description">Easily book appointments with healthcare providers through our scheduling system.</p>
+                  <!-- <a href="#" class="feature-btn">Book Appointment</a>-->
 
-        gsap.fromTo(
-            ".search-bar",
-            { opacity: 0, y: 30, scale: 0.9 },
-            {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                ease: "power3.out",
-                duration: 1.2,
-                delay: 0.6,
-            }
-        );
+                    <a href="{{url_for('appointment')}}" class="feature-btn">Book Appointment</a>
+                </div>
+            </div>
+    
+        </div>
+    </section>
+    
 
-        const features = document.querySelectorAll(".feature");
+    <footer class="footer" id="contact">
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>Contact Us</h3>
+                <div class="underline2"></div>
+                <div class="contact-details">
+                    <a href="mailto:rigvedbhargav@gmail.com"><i class="fas fa-envelope"></i> rigvedbhargav@gmail.com</a>
+                    <a href="tel:+916203522100"><i class="fas fa-phone-alt"></i> +916203522100</a>
+                    <p><i class="fas fa-map-marker-alt"></i>Pune</p>
+                </div>
+            </div>
+            <div class="footer-left">
+                <h3>Stay Connected</h3>
+                <div class="underline2"></div>
+                <p><a href="{{ url_for('feedback') }}" class="footer-link">Share Feedback</a></p>
+                <p><a href="{{ url_for('appointment') }}" class="footer-link">Book Appointment</a></p>
+                <p><a href="{{ url_for('schedule') }}" class="footer-link">View Schedule</a></p>
+            </div>
+            <div class="footer-right">
+                <h3>Follow Us</h3>
+                <div class="underline2"></div>
+                <div class="social-icons">
+                    <a href="https://www.linkedin.com/in/your-profile" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://twitter.com/your-profile" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://facebook.com/your-profile" target="_blank"><i class="fab fa-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Healios AI. All rights reserved.</p>
+        </div>
+    </footer>
+<!--
+<script>
+    let subMenu=document.getElementById(subMenu);
+    function toggleMenu(){
+        subMenu.classList.toggle("open-menu");
+    }
+</script>
+-->
 
-        features.forEach((feature, index) => {
-            const direction = index % 2 === 0 ? 1 : -1;
-            const image = feature.querySelector(".feature-image");
-            const content = feature.querySelector(".feature-content");
+    <script src="scripts.js"></script>
 
-            gsap.from(feature, {
-                opacity: 0,
-                y: 50,
-                rotationX: 10,
-                duration: 1,
-                scrollTrigger: {
-                    trigger: feature,
-                    start: "top 80%",
-                    end: "top 30%",
-                    toggleActions: "play none none reverse",
-                },
-            });
-
-            gsap.from(image, {
-                x: 100 * direction,
-                opacity: 0,
-                duration: 1.2,
-                delay: 0.2,
-                scrollTrigger: {
-                    trigger: feature,
-                    start: "top 80%",
-                    end: "top 30%",
-                    toggleActions: "play none none reverse",
-                },
-            });
-
-            gsap.from(content, {
-                x: -100 * direction,
-                opacity: 0,
-                duration: 1.2,
-                delay: 0.4,
-                scrollTrigger: {
-                    trigger: feature,
-                    start: "top 80%",
-                    end: "top 30%",
-                    toggleActions: "play none none reverse",
-                },
-            });
-
-            feature.addEventListener("mouseenter", () => {
-                gsap.to(feature, {
-                    scale: 1.05,
-                    rotationY: 5,
-                    z: 50,
-                    duration: 0.3,
-                });
-            });
-
-            feature.addEventListener("mouseleave", () => {
-                gsap.to(feature, {
-                    scale: 1,
-                    rotationY: 0,
-                    z: 0,
-                    duration: 0.3,
-                });
-            });
-        });
-
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
 </body>
 </html>
