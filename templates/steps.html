@@ -8,7 +8,8 @@
 <body>
     <h1>Welcome, {{ username }}</h1>
     <h2>Step Tracker</h2>
-    <p>Steps: <span id="stepCount">{{steps.steps}}</span></p>
+    <p>Steps: <span id="stepCount">{{ steps.steps }}</span></p>
+    <p>Status: <span id="status">Waiting...</span></p>
     <button onclick="startTracking()">Start Tracking</button>
 
     <h3>Step History</h3>
@@ -18,6 +19,8 @@
         let prevPosition = null;
         let stepCount = 0;
         const stepThreshold = 1.5; // Approximate step distance in meters
+        const speedThreshold = 3.0; // Speed in m/s (above this, assume not walking)
+        let prevTimestamp = null;
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371e3; // Earth radius in meters
@@ -35,25 +38,34 @@
         }
 
         function trackSteps(position) {
-            const { latitude, longitude } = position.coords;
+            const { latitude, longitude, timestamp } = position.coords;
 
-            if (prevPosition) {
+            if (prevPosition && prevTimestamp) {
                 const distance = calculateDistance(prevPosition.lat, prevPosition.lon, latitude, longitude);
-                
-                if (distance >= stepThreshold) {
-                    stepCount++;
-                    document.getElementById('stepCount').textContent = stepCount;
+                const timeDiff = (timestamp - prevTimestamp) / 1000; // Convert to seconds
+                const speed = distance / timeDiff; // Speed in m/s
 
-                    // Send step count to Flask
-                    fetch('/update_steps', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ steps: stepCount })
-                    });
+                if (speed > speedThreshold) {
+                    document.getElementById('status').textContent = "You are not walking";
+                } else {
+                    document.getElementById('status').textContent = "Walking";
+
+                    if (distance >= stepThreshold) {
+                        stepCount++;
+                        document.getElementById('stepCount').textContent = stepCount;
+
+                        // Send step count to Flask
+                        fetch('/update_steps', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ steps: stepCount })
+                        });
+                    }
                 }
             }
 
             prevPosition = { lat: latitude, lon: longitude };
+            prevTimestamp = timestamp;
         }
 
         function startTracking() {
