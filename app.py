@@ -32,32 +32,6 @@ login_manager.login_view = "login"
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
-# # Separate LoginManager for doctors
-# doc_login_manager = LoginManager()
-# doc_login_manager.init_app(app)
-# doc_login_manager.login_view = "doc_login"
-
-# # Doctor model loader
-# @doc_login_manager.user_loader
-# def load_doctor(doctor_id):
-#     return Docs.query.get(int(doctor_id))
-
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view = "login"
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.query.get(int(user_id))
-
-# login_manager=LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view="login"
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.query.get(int(user_id))
-
 
 
 migrate=Migrate(app,db,render_as_batch=True)
@@ -677,6 +651,13 @@ def doctor_appointment():
     if form.validate_on_submit():
         return redirect(url_for('doctor_appointments'))
     return render_template("doctor_appointments.html", appointments=appointments, form=form)
+
+@app.route('/doctor_calender',methods=['GET','POST'])
+@login_required
+def doctor_calender():
+    appointments=Appointments.query.filter_by(doctor=current_user.name).all()
+    return render_template("doctor_calender.html",appointments=appointments)
+
 
 @app.route('/update_status/<int:appointment_id>',methods=['GET','POST'])
 def update_status(appointment_id):

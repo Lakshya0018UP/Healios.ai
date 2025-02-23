@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Calendar</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
+
+    <style>
+        /* Dark Theme Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #00e6e6;
+        }
+
+        /* Calendar Styling */
+        .calendar-container {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Appointment Cards */
+        .appointment-card {
+            background: #242424;
+            border-left: 5px solid #00e6e6;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 255, 255, 0.2);
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .appointment-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0px 6px 12px rgba(0, 255, 255, 0.4);
+        }
+
+        .status-accepted {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        /* FullCalendar Dark Theme */
+        .fc {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .fc-toolbar-title {
+            color: #00e6e6 !important;
+        }
+
+        .fc-daygrid-day {
+            background: #242424;
+            color: white;
+        }
+
+        .fc-daygrid-day:hover {
+            background: #00e6e6;
+            color: black;
+        }
+
+        .fc-event {
+            background: #00e6e6 !important;
+            border: none !important;
+            color: black !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4">
+    <h2>Doctor's Appointment Calendar</h2>
+
+    <!-- Calendar UI -->
+    <div id="calendar" class="calendar-container mb-4"></div>
+
+    <!-- Appointment List -->
+    <h3 class="mt-4">Upcoming Appointments</h3>
+    <div id="appointment-list">
+        {% for appointment in appointments %}
+        {% if appointment.status == 'Accepted' %}
+            <div class="appointment-card p-3">
+                <h5>{{ appointment.name }}</h5>
+                <p><strong>Email:</strong> {{ appointment.email }}</p>
+                <p>📅 <strong>{{ appointment.date }}</strong> | 🕒 <strong>{{ appointment.time }}</strong></p>
+                <p>👨‍⚕️ <strong>Dr. {{ appointment.doctor }}</strong></p>
+                <p class="status-accepted">✅ Status: {{ appointment.status }}</p>
+            </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<!-- jQuery (for Bootstrap and debugging) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales-all.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("Checking if FullCalendar is loaded:", typeof FullCalendar); // Debugging
+        
+        if (typeof FullCalendar === 'undefined') {
+            console.error("FullCalendar is NOT loaded!");
+            return;
+        }
+
+        var calendarEl = document.getElementById('calendar');
+        if (!calendarEl) {
+            console.error("Calendar element not found!");
+            return;
+        }
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            themeSystem: 'bootstrap',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: [
+                {% for appointment in appointments %}
+                    {% if appointment.status == 'Accepted' %}
+                {
+                    title: "Dr. {{ appointment.doctor }} - {{ appointment.name }}",
+                    start: "{{ appointment.date }}",
+                    description: "Time: {{ appointment.time }}"
+                },
+                {% endif %}
+                {% endfor %}
+            ],
+            eventClick: function (info) {
+                alert(info.event.title + "\n" + info.event.extendedProps.description);
+            }
+        });
+
+        calendar.render();
+        console.log("FullCalendar initialized successfully!"); // Debugging log
+    });
+</script>
+
+</body>
+</html>

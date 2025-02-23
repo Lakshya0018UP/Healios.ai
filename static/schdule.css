@@ -1,0 +1,50 @@
+
+        body {
+            background-color: #1e1e2e; /* Dark Theme */
+            color: #ffffff; /* White Text */
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffcc00; /* Yellow Accent */
+        }
+        .appointment-list {
+            background: #292b3a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .appointment-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .appointment-list li {
+            background: #44475a;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        #calendar {
+            background: #292b3a; /* Dark background */
+            color: #ffffff; /* White text */
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .fc-daygrid-day-number, 
+        .fc-col-header-cell, 
+        .fc-event-title {
+            color: #ffffff !important; /* Ensures all text is white */
+        }
+        .fc-event {
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 3px;
+        }
+   
