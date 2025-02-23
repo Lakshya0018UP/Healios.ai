@@ -771,6 +771,13 @@ def show_steps():
     steps_list = [{"date": str(step.date), "steps": step.steps} for step in step_history]
     return jsonify(steps_list)
 
+@app.route('/appointment_history',methods=['GET','POST'])
+@login_required
+def appointment_history():
+    appointments=Appointments.query.filter_by(author=current_user.name).all()
+    return render_template('appointment_history.html',appointments=appointments)
+
+
 if __name__=='__main__':
     app.run(port=5000,debug=True, host='0.0.0.0')
 

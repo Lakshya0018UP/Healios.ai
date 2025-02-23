@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Appointments !! All at One Place</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='appointment_history.css') }}">
+</head>
+<body>
+
+    <div class="navbar">Your Appointments</div>
+
+    <div class="container">
+        <h1>Manage Appointments</h1>
+        <ul>
+            {% for appointment in appointments %}
+                <li>
+                    <strong>{{ appointment.name }}</strong> - 
+                    {{ appointment.email }} - 
+                    {{ appointment.date }} at {{ appointment.time }} with Dr. {{ appointment.doctor }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>
