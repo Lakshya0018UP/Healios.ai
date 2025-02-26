@@ -360,45 +360,7 @@ def verification_pending():
         return redirect(url_for('index'))
     return render_template('verification_pending.html') 
 
-# @app.route('/')
-# def index():
-#     return render_template('index.html')
 
-# @app.route('/login',methods=['GET','POST'])
-# def login():
-#     form=Login()
-#     if form.validate_on_submit():
-#         user_in=User.query.filter_by(username=form.username.data).first()
-#         if user_in:
-#             if bcrypt.check_password_hash(user_in.password,form.password.data):
-#                 login_user(user_in)
-#                 return redirect('/dashboard')
-                
-           
-    
-#     return render_template('login.html',form=form)
-
-# @app.route('/signup',methods=['GET','POST'])
-# def signup():
-#     form=RegisterForm()
-    
-
-#     if form.validate_on_submit():
-#         hashed_pass=bcrypt.generate_password_hash(form.password.data)
-#         new_user=User(username=form.username.data,password=hashed_pass)
-#         db.session.add(new_user)
-#         db.session.commit()
-#         return redirect('/login')
-        
-
-
-#     return render_template('signup.html',form=form)
-
-# @app.route('/dashboard',methods=['GET','POST'])
-# @login_required
-# def dashboard():
-#     user_logged=current_user
-#     return render_template('dashboard.html',user_logged=user_logged)
 
 @app.route('/bond',methods=['POST','GET'])
 @login_required
@@ -411,7 +373,7 @@ def bonding():
 @login_required
 def delete_post(id):
     post=Bond.query.get_or_404(id)
-    if post.author==current_user.username:
+    if post.author==current_user.name:
         try:
             db.session.delete(post)
             db.session.commit()
@@ -420,7 +382,7 @@ def delete_post(id):
             return("You cant delete this post")
         
     else:
-        return redirect('/dashboard')
+        return redirect('/patient_dashboard')
    
         
 @app.route('/write',methods=['GET','POST'])
