@@ -430,13 +430,13 @@ def write():
     
 
     if form.validate_on_submit():
-        post=Bond(content=form.content.data,author=current_user.username,title=form.title.data,tags=form.tags.data)
+        post=Bond(content=form.content.data,author=current_user.name,title=form.title.data,tags=form.tags.data)
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('bonding'))
     
 
-    posts = Bond.query.filter_by(author=current_user.username).order_by(Bond.date_posted.desc()).all()
+    posts = Bond.query.filter_by(author=current_user.name).order_by(Bond.date_posted.desc()).all()
     
     return render_template('write.html',form=form,posts=posts)
 
