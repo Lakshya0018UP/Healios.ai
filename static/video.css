@@ -1,0 +1,277 @@
+:root {
+    --primary-color: #19a57b;
+    --secondary-color: #f5a623;
+    --background-color: #f9fafb;
+    --text-color: #333;
+    --card-background:white;
+    --border-radius: 16px;
+    --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    --button-active: rgba(74, 144, 226, 0.2);
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+#container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+
+/* Heading Animation */
+h1 {
+    color: var(--primary-color);
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInBounce 1.5s ease-out forwards;
+    position: relative;
+}
+
+/* Fade-in & Bounce Animation */
+@keyframes fadeInBounce {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover Glow Effect */
+h1:hover {
+    text-shadow: 0px 0px 15px rgba(74, 144, 226, 0.7);
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+}
+
+
+
+
+
+/* VIDEO CONTAINER */
+.video-container {
+    position: relative;
+    width: 70%;
+    height: 60vh;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left:180px ;
+}
+
+/* Doctor's Video (Large) */
+.doctor {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    position: relative;
+}
+
+#remoteVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: black;
+}
+
+/* User's Video ("You" - Small & Circular, Positioned at Top-Right) */
+.user {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+#localVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    background: black;
+}
+
+/* Video Labels */
+.video-label {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 1em;
+    text-transform: capitalize;
+}
+
+
+
+
+
+/* Controls Section */
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    gap: 15px;
+}
+
+/* Button Styles */
+.control-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 12px; /* Rounded rectangular shape */
+    cursor: pointer;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-in-out, background-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Hover Effect */
+.control-button:hover {
+    background-color: #15b86c;
+    transform: scale(1.05); /* Slight scaling */
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Click Animation (Ripple Effect) */
+.control-button:active::after {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    animation: ripple 0.4s linear;
+}
+
+/* Ripple Effect Animation */
+@keyframes ripple {
+    to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+}
+
+/* Specific Button Colors */
+#hangupButton {
+    background-color: #e74c3c;
+}
+
+#hangupButton:hover {
+    background-color: #c0392b;
+}
+
+#chatButton {
+    background-color: var(--secondary-color);
+}
+
+#screenShareButton {
+    background-color: #2ecc71;
+}
+
+/* Responsive Buttons for Mobile */
+@media (max-width: 768px) {
+    .control-button {
+        padding: 10px 24px;
+        font-size: 1em;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+.info-box {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: var(--shadow);
+    line-height: 1.6;
+}
+
+.info-box h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.status-active {
+    background-color: #2ecc71;
+}
+
+.status-inactive {
+    background-color: #e74c3c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .video-container {
+        height: 50vh;
+    }
+
+    .user {
+        width: 100px;
+        height: 100px;
+        top: 5px;
+        right: 5px;
+    }
+
+    .control-button {
+        padding: 10px;
+        font-size: 1em;
+    }
+}
